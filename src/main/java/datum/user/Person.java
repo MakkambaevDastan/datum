@@ -18,10 +18,11 @@ import java.time.OffsetDateTime;
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private String firstname;
     private String surname;
     private String patronymic;
+    private String address;
     private String phone;
     private String email;
     @Temporal(TemporalType.DATE)

@@ -13,6 +13,37 @@ spring:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: localhost
+    port: 1025
+    username: hello
+    password: hello
+
+    properties:
+      mail:
+        smtp:
+          ssl:
+            trust: "*"
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
+#  mail:
+#    properties:
+#      mail:
+#        smtp:
+#          starttls:
+#            enable: 'true'
+#            required: 'true'
+#          auth: 'true'
+#          port: '25'
+#        transport:
+#          protocol: smtp
+#    host: email-smtp.us-west-2.amazonaws.com
+#    username: makkambaevdastan@gmail.com
+#    password:
 
 application:
   security:
@@ -21,3 +52,5 @@ application:
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
+
+

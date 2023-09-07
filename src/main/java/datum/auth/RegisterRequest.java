@@ -14,14 +14,15 @@ import java.sql.Date;
 @NoArgsConstructor
 public class RegisterRequest {
 
-  private String firstname;
-  private String surname;
-  private String patronymic;
-  private String email;
-  private String birthDay;
-  private String phone;
+    private String firstname;
+    private String surname;
+    private String patronymic;
+    private String email;
+    private String birthDay;
+    private String phone;
+    private String address;
 
-  private String username;
-  private String password;
-  private Role role;
+//    private String username;
+    private String password;
+    private static Role role = Role.USER;
 }

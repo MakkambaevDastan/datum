@@ -1,5 +1,6 @@
 package datum.user;
 
+//import datum.auth.PasswordResetToken;
 import datum.token.Token;
 import jakarta.persistence.*;
 
@@ -27,16 +28,22 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column(unique = true)
-    private String username;
+    private String email;
     private String password;
+    private Boolean locked = false;
+    private Boolean enabled = false;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
+
+//    @OneToMany(mappedBy = "user")
+//    private List<PasswordResetToken> token;
+
     @OneToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn
     private Person person;
@@ -58,7 +65,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
@@ -68,7 +75,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return locked;
     }
 
     @Override
@@ -78,6 +85,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }
