@@ -14,22 +14,24 @@ spring:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   mail:
-    host: localhost
-    port: 1025
-    username: hello
-    password: hello
-
+    host: smtp.gmail.com
+    port: 587
+    username: datumcrmsystem@gmail.com
+    password: cboz xliq yovb ziay
+    from:
+      email: datumcrmsystem@gmail.com
     properties:
       mail:
         smtp:
-          ssl:
-            trust: "*"
+#          ssl:
+#            trust: "*"
           auth: true
           starttls:
             enable: true
-          connectiontimeout: 5000
-          timeout: 3000
-          writetimeout: 5000
+#          connectiontimeout: 5000
+#          timeout: 3000
+#          writetimeout: 5000
+
 #  mail:
 #    properties:
 #      mail:
@@ -52,5 +54,3 @@ application:
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
-
-

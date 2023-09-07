@@ -1,5 +1,7 @@
 package datum.auth;
 
+import datum.email.EmailDetails;
+import datum.email.EmailService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import java.io.IOException;
 public class AuthenticationController {
 
     private final AuthenticationService service;
+    private final EmailService emailService;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(
@@ -49,6 +52,12 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> confirm(@RequestParam("token") String token) {
             return ResponseEntity.ok(service.confirmToken(token));
     }
+//    @PostMapping("/sendMail")
+//    public String    sendMail(@RequestBody EmailDetails details)
+//    {
+//
+//        return emailService.sendSimpleMail(details);
+//    }
 //    @PostMapping("/resetPassword")
 //    public ResponseEntity<Boolean> resetPassword(HttpServletRequest request,
 //                                                 @RequestBody UsernameRequest username) {
