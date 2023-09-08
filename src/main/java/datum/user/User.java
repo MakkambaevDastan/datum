@@ -1,10 +1,11 @@
 package datum.user;
 
 //import datum.auth.PasswordResetToken;
+import datum.token.PasswordResetToken;
 import datum.token.Token;
 import jakarta.persistence.*;
 
-import java.sql.Date;
+import datum.app.clinic.model.Employee;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -41,16 +42,20 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
 
-//    @OneToMany(mappedBy = "user")
-//    private List<PasswordResetToken> token;
+    @OneToOne(mappedBy = "user")
+    private PasswordResetToken token;
 
     @OneToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn
     private Person person;
+
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private OffsetDateTime date;
+
+    @OneToMany(mappedBy = "user")
+    private List<Employee> employee;
 
 
     @Override

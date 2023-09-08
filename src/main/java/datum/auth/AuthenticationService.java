@@ -1,20 +1,21 @@
 package datum.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import datum.config.JwtService;
-//import datum.email.EmailSender;
 import datum.email.EmailDetails;
 import datum.email.EmailService;
 import datum.token.*;
-import datum.user.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import datum.user.Person;
+import datum.user.Role;
+import datum.user.User;
+import datum.user.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-//import datum.auth.EmailValidator;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -36,113 +39,99 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final ConfirmationTokenService confirmationTokenService;
-    private final EmailValidator emailValidator;
     private final EmailService emailService;
-//    private final EmailSender emailSender;
-//    private final UserService userService;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
-    public Boolean checkEmail(EmailRequest request) {
-
-        return !userRepository.existsByEmailIgnoreCase(request.getEmail().trim());
+    public Boolean checkEmail(String email) {
+        return userRepository.existsByEmailIgnoreCase(email.trim());
     }
 
     private static boolean isDate(String s) {
         return s.matches("\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|[3][01])");
     }
 
+    public static boolean isValidEmail(String emailAddress) {
+        String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9\\+_-]+(\\.[A-Za-z0-9\\+_-]+)*@[^-][A-Za-z0-9\\+-]+(\\.[A-Za-z0-9\\+-]+)*(\\.[A-Za-z]{2,})$";
+        return Pattern.compile(regexPattern)
+                .matcher(emailAddress)
+                .matches();
+    }
+
     public String register(
             HttpServletRequest headRequest,
             @RequestBody RegisterRequest request
     ) {
-        boolean isValidEmail = emailValidator.
-                test(request.getEmail());
-
-        if (!isValidEmail) {
-            throw new IllegalStateException("email not valid");
+        if (!isValidEmail(request.getEmail())) {
+            throw new IllegalStateException("Неправильный email");
+        }
+        if (checkEmail(request.getEmail())) {
+            throw new IllegalStateException("Пользователь уже зарегистрирован");
         }
         Date birthDay = null;
         if (isDate(request.getBirthDay()))
             birthDay = Date.valueOf(request.getBirthDay());
+        else throw new IllegalStateException("не правильный формат даты {2020-12-30}");
+        try {
+            var user = User.builder()
+                    .email(request.getEmail().trim())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .role(Role.USER)
+                    .build();
 
-        var user = User.builder()
-                .email(request.getEmail().trim())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
-                .build();
+            var person = Person.builder()
+                    .firstname(request.getFirstname())
+                    .surname(request.getSurname())
+                    .patronymic(request.getPatronymic())
+                    .address(request.getAddress())
+                    .birthDay(birthDay)
+                    .phone(request.getPhone())
+                    .email(request.getEmail())
+                    .build();
 
-        var person = Person.builder()
-                .firstname(request.getFirstname())
-                .surname(request.getSurname())
-                .patronymic(request.getPatronymic())
-                .address(request.getAddress())
-                .birthDay(birthDay)
-                .phone(request.getPhone())
-                .email(request.getEmail())
-                .build();
+            user.setPerson(person);
 
-        user.setPerson(person);
-        userRepository.save(user);
-//        System.out.println(savedUser);
-//        var jwtToken = jwtService.generateToken(user);
-//        var refreshToken = jwtService.generateRefreshToken(user);
-//        saveUserToken(savedUser, jwtToken);
+            userRepository.save(user);
 
-        String token = UUID.randomUUID().toString();
-        var confirmationToken = ConfirmationToken
-                .builder()
-                .token(token)
-                .createdAt(LocalDateTime.now())
-                .expiresAt(LocalDateTime.now().plusMinutes(15))
-                .build();
-        confirmationToken.setUser(user);
-        confirmationTokenService.saveConfirmationToken(confirmationToken);
+            String token = UUID.randomUUID().toString();
+            var confirmationToken = ConfirmationToken
+                    .builder()
+                    .token(token)
+                    .createdAt(LocalDateTime.now())
+                    .expiresAt(LocalDateTime.now().plusMinutes(15))
+                    .build();
+            confirmationToken.setUser(user);
+            confirmationTokenService.saveConfirmationToken(confirmationToken);
 
-        String mainLink = "http://" + headRequest.getServerName();
-        String link = mainLink +
-                ":" + headRequest.getServerPort() + headRequest.getContextPath() +
-                "/api/v1/auth/confirm?token=" + token;
-        var emailDetails = EmailDetails.builder()
-                .recipient(request.getEmail())
-//                .msgBody(emailService.buildConfirmMessage(mainLink,link))
-                .subject("Подтверждение адреса электронной почты")
-                .build();
-//        String bodyMessage = buildEmail(request.getFirstname(), link);
-//        var emailDetails = new EmailDetails();
-//        emailDetails.setRecipient(request.getEmail());
-//        emailDetails.setMsgBody(mainLink,link);
-//        emailDetails.setSubject("Подтверждение адреса электронной почты");
-
-        emailService.sendSimpleMail(emailDetails, mainLink, link);
-//        emailSender.send(request.getEmail(), buildEmail(request.getFirstname(), link));
-//        System.out.println(link);
-//        System.out.println(buildEmail(request.getFirstname(), link));
-
-//        return AuthenticationResponse.builder()
-//                .accessToken(jwtToken)
-//                .refreshToken(refreshToken)
-//                .build();
-        return "Вам необходимо подтвердить адрес электронной почты " + request.getEmail();
+            String mainLink = "http://" + headRequest.getServerName();
+            String link = mainLink +
+                    ":" + headRequest.getServerPort() + headRequest.getContextPath() +
+                    "/api/v1/auth/confirm?token=" + token;
+            var emailDetails = EmailDetails.builder()
+                    .recipient(request.getEmail())
+                    .subject("Подтверждение адреса электронной почты")
+                    .build();
+            return emailService.sendSimpleMail(emailDetails, mainLink, link);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStateException("ощибка сохранение " + e);
+//            throw new IllegalArgumentException("ощибка сохранение "+e);
+        }
     }
-
-//    public String sendMail(EmailDetails details) {
-//        return emailService.sendSimpleMail(details);
-//    }
 
     @Transactional
     public AuthenticationResponse confirmToken(String token) {
         ConfirmationToken confirmationToken = confirmationTokenService
                 .getToken(token)
                 .orElseThrow(() ->
-                        new IllegalStateException("token not found"));
+                        new IllegalStateException("токен не найден"));
 
         if (confirmationToken.getConfirmedAt() != null) {
-            throw new IllegalStateException("email already confirmed");
+            throw new IllegalStateException("адрес электронной почты уже подтвержден");
         }
 
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
 
         if (expiredAt.isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("token expired");
+            throw new IllegalStateException("срок действия токена истек");
         }
 
         confirmationTokenService.setConfirmedAt(token);
@@ -155,7 +144,6 @@ public class AuthenticationService {
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
-//        return confirmationToken.getUser().toString();
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -227,4 +215,62 @@ public class AuthenticationService {
         }
     }
 
+    public String resetPassword(HttpServletRequest request, EmailRequest email) {
+        var user = userRepository.findByEmailIgnoreCase(email.getEmail()).orElseThrow();
+
+        String token = UUID.randomUUID().toString();
+        var myToken = new PasswordResetToken();
+        myToken.setToken(token);
+        myToken.setUser(user);
+        passwordResetTokenRepository.save(myToken);
+
+        String contextPath = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+        String url = contextPath + "/api/v1/auth/forgotPassword?id=" + user.getId() + "&token=" + token;
+        var emailDetails = EmailDetails.builder()
+                .recipient(user.getEmail())
+                .subject("Сброс пароля")
+                .build();
+        return emailService.sendSimpleMail(emailDetails, contextPath, url);
+    }
+
+    public String forgotPassword(Long id, String token) {
+        var passwordResetToken = passwordResetTokenRepository.findByToken(token);
+        if (passwordResetToken == null || !passwordResetToken.getUser().getId().equals(id)) {
+            throw new IllegalStateException("неправильный токен");
+        }
+        var cal = Calendar.getInstance();
+        if ((passwordResetToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            throw new IllegalStateException("срок действия токена истек");
+        }
+        return passwordResetToken.getToken();
+    }
+
+    public Boolean setNewPassword(HttpServletRequest request, NewPasswordRequest newPassword) {
+        var user = passwordResetTokenRepository.findByToken(newPassword.getToken()).getUser();
+        user.setPassword(passwordEncoder.encode(newPassword.getNewPassword()));
+        userRepository.save(user);
+        return true;
+    }
+
+    public Boolean changePassword(HttpServletRequest request, ChangePasswordRequest changePasswordRequest) {
+        var user = userRepository.findByEmailIgnoreCase(
+                SecurityContextHolder.getContext().getAuthentication().getName()
+        ).orElseThrow();
+//        SecurityContextHolder.getContext().getAuthentication();
+        if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
+            throw new IllegalStateException("Ощибка");
+        }
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.getPassword()));
+        userRepository.save(user);
+        return true;
+    }
+
+//    public boolean checkIfValidOldPassword(final User user, final String oldPassword) {
+//        return passwordEncoder.matches(oldPassword, user.getPassword());
+//    }
+//
+//    public void changeUserPassword(final User user, final String password) {
+//        user.setPassword(passwordEncoder.encode(password));
+//        userRepository.save(user);
+//    }
 }
