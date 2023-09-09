@@ -18,6 +18,7 @@ public class Clinic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private Boolean enabled=true;
 
     @OneToOne
     @JoinColumn

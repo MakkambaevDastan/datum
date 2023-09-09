@@ -20,6 +20,7 @@ public class Department {
     private String name;
     private String address;
     private String phone;
+    private Boolean enabled=true;
 
     @ManyToOne
     @JoinColumn

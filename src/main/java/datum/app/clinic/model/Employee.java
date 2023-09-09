@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.OffsetDateTime;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 @Data
@@ -21,10 +21,10 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Date begin;
+//    private Date begin;
     @Enumerated(EnumType.STRING)
     private EmployeeRole role;
-    private Boolean enabled;
+    private Boolean enabled=true;
 
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     @CreationTimestamp

@@ -18,6 +18,8 @@ public class Chair {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private Boolean enabled=true;
+
     @ManyToOne
     @JoinColumn
     private Room room;

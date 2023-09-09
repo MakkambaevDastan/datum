@@ -1,14 +1,12 @@
 package datum.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import datum.Main;
 import datum.config.JwtService;
 import datum.email.EmailDetails;
 import datum.email.EmailService;
 import datum.token.*;
-import datum.user.Person;
-import datum.user.Role;
-import datum.user.User;
-import datum.user.UserRepository;
+import datum.user.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 
 @Service
@@ -34,63 +30,72 @@ import java.util.regex.Pattern;
 public class AuthenticationService {
 
     private final UserRepository userRepository;
+    private final PersonService personService;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final ConfirmationTokenService confirmationTokenService;
+    private final ConfirmationTokenRepository confirmationTokenRepository;
     private final EmailService emailService;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     public Boolean checkEmail(String email) {
-        return userRepository.existsByEmailIgnoreCase(email.trim());
+        return userRepository.existsByEmailIgnoreCase(email.trim().toLowerCase());
     }
 
-    private static boolean isDate(String s) {
-        return s.matches("\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|[3][01])");
-    }
-
-    public static boolean isValidEmail(String emailAddress) {
-        String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9\\+_-]+(\\.[A-Za-z0-9\\+_-]+)*@[^-][A-Za-z0-9\\+-]+(\\.[A-Za-z0-9\\+-]+)*(\\.[A-Za-z]{2,})$";
-        return Pattern.compile(regexPattern)
-                .matcher(emailAddress)
-                .matches();
-    }
+//    public static boolean isDateBithDay(String s) {
+//        return s.matches("\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|[3][01])");
+//    }
+//
+//    public static boolean isValidEmail(String emailAddress) {
+//        String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9\\+_-]+(\\.[A-Za-z0-9\\+_-]+)*@[^-][A-Za-z0-9\\+-]+(\\.[A-Za-z0-9\\+-]+)*(\\.[A-Za-z]{2,})$";
+//        return Pattern.compile(regexPattern)
+//                .matcher(emailAddress)
+//                .matches();
+//    }
 
     public String register(
             HttpServletRequest headRequest,
-            @RequestBody RegisterRequest request
+            @RequestBody UserDTO userDTO
     ) {
-        if (!isValidEmail(request.getEmail())) {
-            throw new IllegalStateException("Неправильный email");
-        }
-        if (checkEmail(request.getEmail())) {
-            throw new IllegalStateException("Пользователь уже зарегистрирован");
-        }
-        Date birthDay = null;
-        if (isDate(request.getBirthDay()))
-            birthDay = Date.valueOf(request.getBirthDay());
-        else throw new IllegalStateException("не правильный формат даты {2020-12-30}");
         try {
-            var user = User.builder()
-                    .email(request.getEmail().trim())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .role(Role.USER)
-                    .build();
-
-            var person = Person.builder()
-                    .firstname(request.getFirstname())
-                    .surname(request.getSurname())
-                    .patronymic(request.getPatronymic())
-                    .address(request.getAddress())
-                    .birthDay(birthDay)
-                    .phone(request.getPhone())
-                    .email(request.getEmail())
-                    .build();
-
-            user.setPerson(person);
-
+            if (userDTO.getEmail().isBlank())
+                throw new IllegalStateException("Введите email");
+            if (!Main.isValidEmail(userDTO.getEmail()))
+                throw new IllegalStateException("Неправильный email");
+            if (checkEmail(userDTO.getEmail()))
+                throw new IllegalStateException("Пользователь уже зарегистрирован");
+            User user = UserMapper.INSTANCE.convert(userDTO);
             userRepository.save(user);
+//
+////        Date birthDay = null;
+//        PersonDTO personDTO = userDTO.getPerson();
+////        if(personDTO.getBirthDay()!=null)
+////            if (isDate(personDTO.getBirthDay()))
+////                birthDay = Date.valueOf(personDTO.getBirthDay());
+////            else throw new IllegalStateException("не правильный формат даты {YYYY-MM-DD}");
+//
+//            var user = User.builder()
+//                    .email(userDTO.getEmail().trim())
+//                    .password(passwordEncoder.encode(userDTO.getPassword()))
+//                    .role(Role.USER)
+//                    .build();
+////            personService.person(personDTO);
+////            var person = Person.builder()
+////                    .firstname(personDTO.getFirstname())
+////                    .surname(personDTO.getSurname())
+////                    .patronymic(personDTO.getPatronymic())
+////                    .address(personDTO.getAddress())
+////                    .birthDay(birthDay)
+////                    .phone(personDTO.getPhone())
+////                    .email(userDTO.getEmail())
+////                    .build();
+//
+//            user.setPerson(personService.person(personDTO));
+//
+//            userRepository.save(user);
+
 
             String token = UUID.randomUUID().toString();
             var confirmationToken = ConfirmationToken
@@ -100,29 +105,52 @@ public class AuthenticationService {
                     .expiresAt(LocalDateTime.now().plusMinutes(15))
                     .build();
             confirmationToken.setUser(user);
-            confirmationTokenService.saveConfirmationToken(confirmationToken);
+            confirmationTokenRepository.save(confirmationToken);
+//            confirmationTokenService.saveConfirmationToken(confirmationToken);
 
             String mainLink = "http://" + headRequest.getServerName();
             String link = mainLink +
-                    ":" + headRequest.getServerPort() + headRequest.getContextPath() +
-                    "/api/v1/auth/confirm?token=" + token;
+                          ":" + headRequest.getServerPort() + headRequest.getContextPath() +
+                          "/api/v1/auth/confirm?token=" + token;
             var emailDetails = EmailDetails.builder()
-                    .recipient(request.getEmail())
+                    .recipient(userDTO.getEmail())
                     .subject("Подтверждение адреса электронной почты")
                     .build();
-            return emailService.sendSimpleMail(emailDetails, mainLink, link);
+            emailService.sendSimpleMail(emailDetails, mainLink, link);
+            return token+" "+link;
         } catch (IllegalArgumentException e) {
             throw new IllegalStateException("ощибка сохранение " + e);
-//            throw new IllegalArgumentException("ощибка сохранение "+e);
         }
     }
 
+//    private Person person(PersonDTO personDTO) {
+//        Date birthDay = null;
+//        if (personDTO.getBirthDay() != null)
+//            if (isDate(personDTO.getBirthDay()))
+//                birthDay = Date.valueOf(personDTO.getBirthDay());
+//            else throw new IllegalStateException("не правильный формат даты {YYYY-MM-DD}");
+//
+//        var person = Person.builder()
+//                .firstname(personDTO.getFirstname())
+//                .surname(personDTO.getSurname())
+//                .patronymic(personDTO.getPatronymic())
+//                .address(personDTO.getAddress())
+//                .birthDay(birthDay)
+//                .phone(personDTO.getPhone())
+//                .email(personDTO.getEmail())
+//                .build();
+//        personRepository.save(person);
+//        return person;
+//    }
+
     @Transactional
     public AuthenticationResponse confirmToken(String token) {
-        ConfirmationToken confirmationToken = confirmationTokenService
-                .getToken(token)
-                .orElseThrow(() ->
-                        new IllegalStateException("токен не найден"));
+        var confirmationToken = confirmationTokenRepository.findByToken(token).orElseThrow(() ->
+                new IllegalStateException("токен не найден"));
+//        ConfirmationToken confirmationToken = confirmationTokenService
+//                .getToken(token)
+//                .orElseThrow(() ->
+//                        new IllegalStateException("токен не найден"));
 
         if (confirmationToken.getConfirmedAt() != null) {
             throw new IllegalStateException("адрес электронной почты уже подтвержден");
@@ -133,8 +161,9 @@ public class AuthenticationService {
         if (expiredAt.isBefore(LocalDateTime.now())) {
             throw new IllegalStateException("срок действия токена истек");
         }
-
-        confirmationTokenService.setConfirmedAt(token);
+        confirmationTokenRepository.updateConfirmedAt(
+                token, LocalDateTime.now());
+//        confirmationTokenService.setConfirmedAt(token);
         userRepository.enableUser(confirmationToken.getUser().getEmail());
 
         var jwtToken = jwtService.generateToken(confirmationToken.getUser());
@@ -149,11 +178,11 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
+                        request.getEmail().toLowerCase().trim(),
                         request.getPassword()
                 )
         );
-        var user = userRepository.findByEmailIgnoreCase(request.getEmail())
+        var user = userRepository.findByEmailIgnoreCase(request.getEmail().toLowerCase().trim())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
@@ -215,9 +244,10 @@ public class AuthenticationService {
         }
     }
 
-    public String resetPassword(HttpServletRequest request, EmailRequest email) {
-        var user = userRepository.findByEmailIgnoreCase(email.getEmail()).orElseThrow();
-
+    public String resetPassword(HttpServletRequest request, String email) {
+        var user = userRepository.findByEmailIgnoreCase(
+                email.toLowerCase().trim()).orElseThrow();
+//if(use)
         String token = UUID.randomUUID().toString();
         var myToken = new PasswordResetToken();
         myToken.setToken(token);
@@ -230,7 +260,7 @@ public class AuthenticationService {
                 .recipient(user.getEmail())
                 .subject("Сброс пароля")
                 .build();
-        return emailService.sendSimpleMail(emailDetails, contextPath, url);
+        return emailService.sendSimpleMail(emailDetails, contextPath, url)+" "+url;
     }
 
     public String forgotPassword(Long id, String token) {
@@ -242,35 +272,37 @@ public class AuthenticationService {
         if ((passwordResetToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
             throw new IllegalStateException("срок действия токена истек");
         }
+        passwordResetToken.getUser().setPassword(null);
+        userRepository.save(passwordResetToken.getUser());
         return passwordResetToken.getToken();
     }
 
-    public Boolean setNewPassword(HttpServletRequest request, NewPasswordRequest newPassword) {
-        var user = passwordResetTokenRepository.findByToken(newPassword.getToken()).getUser();
-        user.setPassword(passwordEncoder.encode(newPassword.getNewPassword()));
+    public Boolean setPassword(ForgotPassword password) {
+        var passwordResetToken = passwordResetTokenRepository.findByToken(password.getToken());
+        if (passwordResetToken == null) {
+            throw new IllegalStateException("такого токена нет");
+        }
+        var cal = Calendar.getInstance();
+        if ((passwordResetToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            throw new IllegalStateException("срок действия токена истек");
+        }
+
+        var user = passwordResetToken.getUser();
+        user.setPassword(passwordEncoder.encode(password.getPassword()));
         userRepository.save(user);
+
+        passwordResetToken.setToken(null);
         return true;
     }
-
-    public Boolean changePassword(HttpServletRequest request, ChangePasswordRequest changePasswordRequest) {
+    public Boolean changePassword(PasswordDTO passwordDTO) {
         var user = userRepository.findByEmailIgnoreCase(
                 SecurityContextHolder.getContext().getAuthentication().getName()
         ).orElseThrow();
-//        SecurityContextHolder.getContext().getAuthentication();
-        if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(passwordDTO.getOldPassword(), user.getPassword())) {
             throw new IllegalStateException("Ощибка");
         }
-        user.setPassword(passwordEncoder.encode(changePasswordRequest.getPassword()));
+        user.setPassword(passwordEncoder.encode(passwordDTO.getPassword()));
         userRepository.save(user);
         return true;
     }
-
-//    public boolean checkIfValidOldPassword(final User user, final String oldPassword) {
-//        return passwordEncoder.matches(oldPassword, user.getPassword());
-//    }
-//
-//    public void changeUserPassword(final User user, final String password) {
-//        user.setPassword(passwordEncoder.encode(password));
-//        userRepository.save(user);
-//    }
 }

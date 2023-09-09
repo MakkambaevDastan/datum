@@ -1,6 +1,6 @@
 package datum.auth;
 
-import datum.email.EmailService;
+import datum.user.UserDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,16 +15,15 @@ import java.io.IOException;
 public class AuthenticationController {
 
     private final AuthenticationService service;
-    private final EmailService emailService;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(
             HttpServletRequest headRequest,
-            @RequestBody RegisterRequest request
+            @RequestBody UserDTO userDTO
     ) {
-        try{
-            return ResponseEntity.ok(service.register(headRequest, request));
-        } catch (IllegalStateException e){
+        try {
+            return ResponseEntity.ok(service.register(headRequest, userDTO));
+        } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
@@ -40,9 +39,9 @@ public class AuthenticationController {
 
     @PostMapping("/checkEmail")
     public ResponseEntity<Boolean> checkEmail(
-            @RequestBody EmailRequest request
+            @RequestBody Email email
     ) {
-        return ResponseEntity.ok(service.checkEmail(request.getEmail()));
+        return ResponseEntity.ok(service.checkEmail(email.getEmail()));
     }
 
     @GetMapping("/refresh-token")
@@ -55,14 +54,14 @@ public class AuthenticationController {
 
     @GetMapping(path = "/confirm")
     public ResponseEntity<AuthenticationResponse> confirm(@RequestParam("token") String token) {
-
         return ResponseEntity.ok(service.confirmToken(token));
     }
 
     @PostMapping("/resetPassword")
-    public ResponseEntity<String> resetPassword(HttpServletRequest request,
-                                                @RequestBody EmailRequest email) {
-        return ResponseEntity.ok(service.resetPassword(request, email));
+    public ResponseEntity<String> resetPassword(
+            HttpServletRequest request,
+            @RequestBody Email email) {
+        return ResponseEntity.ok(service.resetPassword(request, email.getEmail()));
     }
 
     @GetMapping("/forgotPassword")
@@ -70,9 +69,8 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.forgotPassword(id, token));
     }
 
-    @PostMapping("/setNewPassword")
-    public  ResponseEntity<Boolean> setNewPassword(HttpServletRequest request, @RequestBody NewPasswordRequest newPassword) {
-        return ResponseEntity.ok(service.setNewPassword(request, newPassword));
+    @PostMapping("/setPassword")
+    public ResponseEntity<Boolean> setPassword(@RequestBody ForgotPassword forgotPassword) {
+        return ResponseEntity.ok(service.setPassword(forgotPassword));
     }
-
 }

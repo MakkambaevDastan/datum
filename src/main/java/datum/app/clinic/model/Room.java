@@ -18,6 +18,7 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private Boolean enabled=true;
     @ManyToOne
     @JoinColumn
     private Department department;

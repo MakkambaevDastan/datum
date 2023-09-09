@@ -1,6 +1,5 @@
 package datum.user;
 
-//import datum.auth.PasswordResetToken;
 import datum.token.PasswordResetToken;
 import datum.token.Token;
 import jakarta.persistence.*;
@@ -10,10 +9,7 @@ import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
+@ToString
 public class User implements UserDetails {
 
     @Id
