@@ -1,6 +1,7 @@
 package datum.user;
 
 import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.util.Calendar;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Jacksonized
 public class PersonDTO {
     private String firstname;
     private String surname;

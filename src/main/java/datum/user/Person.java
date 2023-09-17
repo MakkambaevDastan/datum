@@ -1,9 +1,12 @@
 package datum.user;
 
+//import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nimbusds.openid.connect.sdk.assurance.claims.CountryCode;
 import com.nimbusds.openid.connect.sdk.assurance.claims.ISO3166_1Alpha2CountryCode;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Date;
@@ -16,6 +19,7 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @Entity
 @ToString
+@Jacksonized
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +43,7 @@ public class Person {
     private String passportSeries;
     private Integer passportNumber;
     private Long PIN;
-
+    @JsonIgnore
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

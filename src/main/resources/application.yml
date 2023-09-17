@@ -6,11 +6,13 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
-    show-sql: false
+      ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
         format_sql: true
+        jdbc:
+          time_zone: UTC
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   mail:

@@ -11,8 +11,8 @@ public class PasswordController {
     private final AuthenticationService service;
 
     @PostMapping("/change")
-    public ResponseEntity<Boolean> changePassword(@RequestBody PasswordDTO passwordDTO) {
-        return ResponseEntity.ok(service.changePassword(passwordDTO));
+    public ResponseEntity<Boolean> changePassword(@RequestBody Password password) {
+        return ResponseEntity.ok(service.changePassword(password));
     }
 
 

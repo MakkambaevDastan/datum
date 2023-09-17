@@ -1,11 +1,14 @@
 package datum.app.clinic.service;
 
-import datum.app.clinic.controller.ClinicDTO;
-import datum.app.clinic.controller.EmployeeDTO;
-import jakarta.servlet.http.HttpServletRequest;
+import datum.app.clinic.dto.*;
+import datum.app.clinic.model.*;
+
+import java.util.List;
 
 public interface ClinicService {
-    public Boolean addClinic(ClinicDTO clinicDTO);
-    public Boolean employee(HttpServletRequest request, EmployeeDTO employeeDTO);
-//    void addDepartment(DepartmentAddRequest departmentAddRequest);
+    Object clinic(List<ClinicDTO> clinicDTOs);
+    Object department(Long id, List<DepartmentDTO> departmentDTOs);
+    Object room(Long id, List<RoomDTO> roomDTOs);
+    List<Chair>  chair(Long id, List<ChairDTO> chairDTOs);
+//    Employee employee(HttpServletRequest request, EmployeeDTO employeeDTO);
 }

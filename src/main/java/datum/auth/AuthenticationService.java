@@ -17,25 +17,21 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.UUID;
 
-
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
 
     private final UserRepository userRepository;
-    private final PersonService personService;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final ConfirmationTokenService confirmationTokenService;
     private final ConfirmationTokenRepository confirmationTokenRepository;
     private final EmailService emailService;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
@@ -44,58 +40,23 @@ public class AuthenticationService {
         return userRepository.existsByEmailIgnoreCase(email.trim().toLowerCase());
     }
 
-//    public static boolean isDateBithDay(String s) {
-//        return s.matches("\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|[3][01])");
-//    }
-//
-//    public static boolean isValidEmail(String emailAddress) {
-//        String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9\\+_-]+(\\.[A-Za-z0-9\\+_-]+)*@[^-][A-Za-z0-9\\+-]+(\\.[A-Za-z0-9\\+-]+)*(\\.[A-Za-z]{2,})$";
-//        return Pattern.compile(regexPattern)
-//                .matcher(emailAddress)
-//                .matches();
-//    }
+    public String register(HttpServletRequest headRequest, UserDTO userDTO) {
+        return register(headRequest, UserMapper.INSTANCE.convert(userDTO));
+    }
 
-    public String register(
-            HttpServletRequest headRequest,
-            @RequestBody UserDTO userDTO
-    ) {
+    public String register(HttpServletRequest request, User user) {
         try {
-            if (userDTO.getEmail().isBlank())
+            if (user.getEmail().isBlank())
                 throw new IllegalStateException("Введите email");
-            if (!Main.isValidEmail(userDTO.getEmail()))
+            if (!Main.isValidEmail(user.getEmail()))
                 throw new IllegalStateException("Неправильный email");
-            if (checkEmail(userDTO.getEmail()))
+            if (checkEmail(user.getEmail()))
                 throw new IllegalStateException("Пользователь уже зарегистрирован");
-            User user = UserMapper.INSTANCE.convert(userDTO);
-            userRepository.save(user);
-//
-////        Date birthDay = null;
-//        PersonDTO personDTO = userDTO.getPerson();
-////        if(personDTO.getBirthDay()!=null)
-////            if (isDate(personDTO.getBirthDay()))
-////                birthDay = Date.valueOf(personDTO.getBirthDay());
-////            else throw new IllegalStateException("не правильный формат даты {YYYY-MM-DD}");
-//
-//            var user = User.builder()
-//                    .email(userDTO.getEmail().trim())
-//                    .password(passwordEncoder.encode(userDTO.getPassword()))
-//                    .role(Role.USER)
-//                    .build();
-////            personService.person(personDTO);
-////            var person = Person.builder()
-////                    .firstname(personDTO.getFirstname())
-////                    .surname(personDTO.getSurname())
-////                    .patronymic(personDTO.getPatronymic())
-////                    .address(personDTO.getAddress())
-////                    .birthDay(birthDay)
-////                    .phone(personDTO.getPhone())
-////                    .email(userDTO.getEmail())
-////                    .build();
-//
-//            user.setPerson(personService.person(personDTO));
-//
-//            userRepository.save(user);
+            if (user.getPassword().isBlank())
+                throw new IllegalStateException("Нет пароля");
+            user.setRole(Role.USER);
 
+            userRepository.save(user);
 
             String token = UUID.randomUUID().toString();
             var confirmationToken = ConfirmationToken
@@ -106,66 +67,37 @@ public class AuthenticationService {
                     .build();
             confirmationToken.setUser(user);
             confirmationTokenRepository.save(confirmationToken);
-//            confirmationTokenService.saveConfirmationToken(confirmationToken);
 
-            String mainLink = "http://" + headRequest.getServerName();
+            String mainLink = "http://" + request.getServerName();
             String link = mainLink +
-                          ":" + headRequest.getServerPort() + headRequest.getContextPath() +
+                          ":" + request.getServerPort() + request.getContextPath() +
                           "/api/v1/auth/confirm?token=" + token;
             var emailDetails = EmailDetails.builder()
-                    .recipient(userDTO.getEmail())
+                    .recipient(user.getEmail())
                     .subject("Подтверждение адреса электронной почты")
                     .build();
             emailService.sendSimpleMail(emailDetails, mainLink, link);
-            return token+" "+link;
+            System.out.println(link);
+            return token + " " + link;
         } catch (IllegalArgumentException e) {
             throw new IllegalStateException("ощибка сохранение " + e);
         }
     }
 
-//    private Person person(PersonDTO personDTO) {
-//        Date birthDay = null;
-//        if (personDTO.getBirthDay() != null)
-//            if (isDate(personDTO.getBirthDay()))
-//                birthDay = Date.valueOf(personDTO.getBirthDay());
-//            else throw new IllegalStateException("не правильный формат даты {YYYY-MM-DD}");
-//
-//        var person = Person.builder()
-//                .firstname(personDTO.getFirstname())
-//                .surname(personDTO.getSurname())
-//                .patronymic(personDTO.getPatronymic())
-//                .address(personDTO.getAddress())
-//                .birthDay(birthDay)
-//                .phone(personDTO.getPhone())
-//                .email(personDTO.getEmail())
-//                .build();
-//        personRepository.save(person);
-//        return person;
-//    }
-
-    @Transactional
+//    @Transactional
     public AuthenticationResponse confirmToken(String token) {
+//        var confirmationToken = confirmationTokenRepository.findByToken(token).orElseThrow();
         var confirmationToken = confirmationTokenRepository.findByToken(token).orElseThrow(() ->
                 new IllegalStateException("токен не найден"));
-//        ConfirmationToken confirmationToken = confirmationTokenService
-//                .getToken(token)
-//                .orElseThrow(() ->
-//                        new IllegalStateException("токен не найден"));
-
         if (confirmationToken.getConfirmedAt() != null) {
             throw new IllegalStateException("адрес электронной почты уже подтвержден");
         }
-
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
-
         if (expiredAt.isBefore(LocalDateTime.now())) {
             throw new IllegalStateException("срок действия токена истек");
         }
-        confirmationTokenRepository.updateConfirmedAt(
-                token, LocalDateTime.now());
-//        confirmationTokenService.setConfirmedAt(token);
+        confirmationTokenRepository.updateConfirmedAt(token, LocalDateTime.now());
         userRepository.enableUser(confirmationToken.getUser().getEmail());
-
         var jwtToken = jwtService.generateToken(confirmationToken.getUser());
         var refreshToken = jwtService.generateRefreshToken(confirmationToken.getUser());
         saveUserToken(confirmationToken.getUser(), jwtToken);
@@ -247,20 +179,18 @@ public class AuthenticationService {
     public String resetPassword(HttpServletRequest request, String email) {
         var user = userRepository.findByEmailIgnoreCase(
                 email.toLowerCase().trim()).orElseThrow();
-//if(use)
         String token = UUID.randomUUID().toString();
         var myToken = new PasswordResetToken();
         myToken.setToken(token);
         myToken.setUser(user);
         passwordResetTokenRepository.save(myToken);
-
         String contextPath = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
         String url = contextPath + "/api/v1/auth/forgotPassword?id=" + user.getId() + "&token=" + token;
         var emailDetails = EmailDetails.builder()
                 .recipient(user.getEmail())
                 .subject("Сброс пароля")
                 .build();
-        return emailService.sendSimpleMail(emailDetails, contextPath, url)+" "+url;
+        return emailService.sendSimpleMail(emailDetails, contextPath, url) + " " + url;
     }
 
     public String forgotPassword(Long id, String token) {
@@ -286,22 +216,21 @@ public class AuthenticationService {
         if ((passwordResetToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
             throw new IllegalStateException("срок действия токена истек");
         }
-
         var user = passwordResetToken.getUser();
         user.setPassword(passwordEncoder.encode(password.getPassword()));
         userRepository.save(user);
-
         passwordResetToken.setToken(null);
         return true;
     }
-    public Boolean changePassword(PasswordDTO passwordDTO) {
+
+    public Boolean changePassword(Password password) {
         var user = userRepository.findByEmailIgnoreCase(
                 SecurityContextHolder.getContext().getAuthentication().getName()
         ).orElseThrow();
-        if (!passwordEncoder.matches(passwordDTO.getOldPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(password.getOldPassword(), user.getPassword())) {
             throw new IllegalStateException("Ощибка");
         }
-        user.setPassword(passwordEncoder.encode(passwordDTO.getPassword()));
+        user.setPassword(passwordEncoder.encode(password.getPassword()));
         userRepository.save(user);
         return true;
     }

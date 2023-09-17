@@ -1,5 +1,6 @@
 package datum.auth;
 
+import datum.user.User;
 import datum.user.UserDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

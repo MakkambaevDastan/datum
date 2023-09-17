@@ -1,18 +1,16 @@
-package datum.app.clinic.controller;
+package datum.app.clinic.dto;
 
-import datum.app.clinic.model.Chair;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
+import lombok.extern.jackson.Jacksonized;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomDTO {
+@Jacksonized
+public class ChairDTO {
     private String name;
-    private List<ChairDTO> chairs;
 }

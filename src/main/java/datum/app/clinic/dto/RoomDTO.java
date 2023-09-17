@@ -1,20 +1,19 @@
-package datum.app.clinic.controller;
+package datum.app.clinic.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
-import java.util.Map;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DepartmentDTO {
+@Jacksonized
+public class RoomDTO {
     private String name;
-    private String address;
-    private String phone;
-    private List<RoomDTO> rooms;
+    private List<ChairDTO> chairs;
 }

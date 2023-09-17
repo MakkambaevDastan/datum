@@ -7,16 +7,21 @@ import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-//@Mapper(uses = {PersonMapper.class,PasswordEncoderMapper.class},componentModel = "spring")
-//@Mapper(uses = {PersonMapper.class,PasswordEncoderMapper.class})
 @Mapper(uses = {PersonMapper.class})
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
-    @Mapping(source = "role", target = "role")
     @Mapping(source = "password", target = "password", qualifiedByName = "encryptPassword")
     @Mapping(source = "email", target = "email", qualifiedByName = "lowerCase")
-    @Mapping(source = "person.email", target = "person.email", qualifiedByName = "lowerCase")
-    UserDTO convert(User user);
+//    @Mapping(source = "person.email", target = "person.email", qualifiedByName = "lowerCase")
+    @Mapping(target = "enabled", constant = "true")
+    @Mapping(target = "deleted", constant = "false")
+    User convert(UserDTO userDTO);
+
+//    @Mapping(source = "password", target = "password", qualifiedByName = "encryptPassword")
+//    @Mapping(source = "email", target = "email", qualifiedByName = "lowerCase")
+////    @Mapping(source = "person.email", target = "person.email", qualifiedByName = "lowerCase")
+//    User convert(RegisterRequest registerRequest);
+
     @Named("encryptPassword") // 2
     default String encryptPassword(String password) {
         return new BCryptPasswordEncoder().encode(password);
@@ -24,8 +29,7 @@ public interface UserMapper {
     @Named("lowerCase") // 2
     default String lowerCase(String email) {
         return email.toLowerCase();
-
     }
     @InheritInverseConfiguration
-    User convert(UserDTO userDTO);
+    UserDTO convert(User user);
 }

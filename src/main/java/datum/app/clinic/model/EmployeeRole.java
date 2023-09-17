@@ -4,6 +4,6 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum EmployeeRole {
-    HEAD
+    HEAD, DOCTOR, NURSE, ADMIN,
 
 }

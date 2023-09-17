@@ -1,17 +1,15 @@
-package datum.app.clinic.controller;
+package datum.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClinicDTO {
-    private DepartmentDTO head;
-    private List<DepartmentDTO> departments;
+public class Password {
+    private String password;
+    private String oldPassword;
 }

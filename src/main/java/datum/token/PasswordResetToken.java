@@ -22,7 +22,7 @@ public class PasswordResetToken {
 
     private String token;
 
-    @OneToOne(cascade = {CascadeType.PERSIST})
+    @OneToOne
     @JoinColumn
     private User user;
 

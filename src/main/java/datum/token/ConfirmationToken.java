@@ -24,6 +24,6 @@ public class ConfirmationToken {
     private LocalDateTime confirmedAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn
     private User user;
 }
