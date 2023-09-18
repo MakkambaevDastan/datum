@@ -12,6 +12,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public enum Role {
 
-    USER,ROOT;
+    USER,ADMIN,ROOT;
 
 }

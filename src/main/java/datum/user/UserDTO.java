@@ -14,5 +14,6 @@ import lombok.extern.jackson.Jacksonized;
 public class UserDTO {
     private String email;
     private String password;
+    private Role role;
     private PersonDTO person;
 }

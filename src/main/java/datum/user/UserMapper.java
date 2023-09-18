@@ -12,6 +12,7 @@ public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
     @Mapping(source = "password", target = "password", qualifiedByName = "encryptPassword")
     @Mapping(source = "email", target = "email", qualifiedByName = "lowerCase")
+    @Mapping(source = "role", target = "role")
 //    @Mapping(source = "person.email", target = "person.email", qualifiedByName = "lowerCase")
     @Mapping(target = "enabled", constant = "true")
     @Mapping(target = "deleted", constant = "false")

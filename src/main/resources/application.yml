@@ -48,7 +48,12 @@ spring:
 #    host: email-smtp.us-west-2.amazonaws.com
 #    username: makkambaevdastan@gmail.com
 #    password:
-
+#management:
+#  endpoints:
+#    web:
+#      base-path: /actuator
+#      exposure:
+#        include: *
 application:
   security:
     jwt:

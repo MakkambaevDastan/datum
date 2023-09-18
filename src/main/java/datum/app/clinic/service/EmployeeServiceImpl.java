@@ -8,6 +8,7 @@ import datum.app.clinic.model.Department;
 import datum.app.clinic.model.Employee;
 import datum.app.clinic.model.repositoy.DepartmentRepository;
 import datum.app.clinic.model.repositoy.EmployeeRepository;
+import datum.app.clinic.model.repositoy.PostRepository;
 import datum.auth.AuthenticationService;
 import datum.user.User;
 import datum.user.UserRepository;
@@ -29,12 +30,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final AuthenticationService authenticationService;
     private final DepartmentRepository departmentRepository;
+    private final PostRepository postRepository;
 
     @Override
-    public Object employee(HttpServletRequest request, long id, List<EmployeeDTO> employeeDTOs) {
+    public List<Employee> employee(HttpServletRequest request, long id, List<EmployeeDTO> employeeDTOs) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Department department = departmentRepository.findById(id).orElseThrow();
-        List<Employee> employees = EmployeeMapper.INSTANCE.list(employeeDTOs);
+        List<Employee> employees = EmployeeMapper.INSTANCE.list(employeeDTOs, postRepository);
         User user;
         for (Employee employee : employees) {
             if (!Objects.isNull(employee.getUser()) &&
@@ -52,7 +54,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Object schedule(long id, ScheduleDTO scheduleDTO) {
+    public List<Employee> employee() {
+        User user = userRepository.findByEmailIgnoreCase(
+                SecurityContextHolder.getContext().getAuthentication().getName()
+        ).orElseThrow();
+        return user.getEmployee();
+    }
+
+    @Override
+    public Employee schedule(long id, ScheduleDTO scheduleDTO) {
         Employee employee = employeeRepository.findById(id).orElseThrow();
         scheduleDTO.getStart().forEach((k, v) -> employee.getStart().put(Day.valueOf(k), LocalTime.parse(v)));
         scheduleDTO.getEnd().forEach((k, v) -> employee.getEnd().put(Day.valueOf(k), LocalTime.parse(v)));

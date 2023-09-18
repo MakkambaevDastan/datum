@@ -54,7 +54,7 @@ public class AuthenticationService {
                 throw new IllegalStateException("Пользователь уже зарегистрирован");
             if (user.getPassword().isBlank())
                 throw new IllegalStateException("Нет пароля");
-            user.setRole(Role.USER);
+//            user.setRole(Role.USER);
 
             userRepository.save(user);
 
@@ -86,7 +86,6 @@ public class AuthenticationService {
 
 //    @Transactional
     public AuthenticationResponse confirmToken(String token) {
-//        var confirmationToken = confirmationTokenRepository.findByToken(token).orElseThrow();
         var confirmationToken = confirmationTokenRepository.findByToken(token).orElseThrow(() ->
                 new IllegalStateException("токен не найден"));
         if (confirmationToken.getConfirmedAt() != null) {

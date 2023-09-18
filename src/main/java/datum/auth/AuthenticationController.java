@@ -1,11 +1,13 @@
 package datum.auth;
 
+import datum.config.LogoutService;
 import datum.user.User;
 import datum.user.UserDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -16,6 +18,7 @@ import java.io.IOException;
 public class AuthenticationController {
 
     private final AuthenticationService service;
+    private final LogoutService logoutService;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(
@@ -73,5 +76,12 @@ public class AuthenticationController {
     @PostMapping("/setPassword")
     public ResponseEntity<Boolean> setPassword(@RequestBody ForgotPassword forgotPassword) {
         return ResponseEntity.ok(service.setPassword(forgotPassword));
+    }
+
+    @GetMapping("/logout")
+    public void logout(HttpServletRequest request,
+                       HttpServletResponse response,
+                       Authentication authentication) {
+        logoutService.logout(request, response, authentication);
     }
 }

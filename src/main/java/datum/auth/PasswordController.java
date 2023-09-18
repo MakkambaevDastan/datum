@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/password")
+@RequestMapping("/api/v1/password")
 @RequiredArgsConstructor
 public class PasswordController {
     private final AuthenticationService service;

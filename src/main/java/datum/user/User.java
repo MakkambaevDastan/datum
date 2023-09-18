@@ -43,7 +43,7 @@ public class User implements UserDetails {
     @JsonIgnore
     private Boolean deleted;
 
-    @JsonIgnore
+//    @JsonIgnore
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
