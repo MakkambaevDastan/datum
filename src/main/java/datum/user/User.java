@@ -3,7 +3,6 @@ package datum.user;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import datum.app.clinic.model.Clinic;
-import datum.token.PasswordResetToken;
 import datum.token.Token;
 import jakarta.persistence.*;
 
@@ -32,8 +31,10 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+//    @Email
     @Column(unique = true)
     private String email;
+//    @NotBlank
     @JsonIgnore
     private String password;
     @JsonIgnore
@@ -43,17 +44,12 @@ public class User implements UserDetails {
     @JsonIgnore
     private Boolean deleted;
 
-//    @JsonIgnore
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
-
-    @JsonIgnore
-    @OneToOne(mappedBy = "user")
-    private PasswordResetToken token;
 
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn

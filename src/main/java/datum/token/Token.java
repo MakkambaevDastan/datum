@@ -27,7 +27,9 @@ public class Token {
   public Long id;
 
   @Column(unique = true)
-  public String token;
+  public String accessToken;
+  @Column(unique = true)
+  public String refreshToken;
 
   @Enumerated(EnumType.STRING)
   public TokenType tokenType = TokenType.BEARER;

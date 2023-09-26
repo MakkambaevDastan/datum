@@ -11,10 +11,13 @@ import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDate;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SpringBootApplication
 public class Main {
+//    public final static Pattern pattern = Pattern.compile("\\s");
+//    public final static Matcher matcher = pattern.matcher(s);
     public static boolean isDateBithDay(String s) {
         return s.matches("\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|[3][01])");
     }

@@ -21,16 +21,16 @@ public class AuthenticationController {
     private final LogoutService logoutService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(
+    public ResponseEntity<User> register(
             HttpServletRequest headRequest,
             @RequestBody UserDTO userDTO
     ) {
-        try {
-            return ResponseEntity.ok(service.register(headRequest, userDTO));
-        } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok(service.register(headRequest, userDTO));
+    }
 
+    @GetMapping("/cancel/{token}")
+    public ResponseEntity<Object> cancel(@PathVariable("token") String token) {
+        return ResponseEntity.ok(service.cancel(token));
     }
 
     @PostMapping("/authenticate")
@@ -48,7 +48,15 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.checkEmail(email.getEmail()));
     }
 
-    @GetMapping("/refresh-token")
+    @GetMapping("/accessToken")
+    public void accessToken(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws IOException {
+        service.accessToken(request, response);
+    }
+
+    @GetMapping("/refreshToken")
     public void refreshToken(
             HttpServletRequest request,
             HttpServletResponse response
@@ -56,9 +64,16 @@ public class AuthenticationController {
         service.refreshToken(request, response);
     }
 
-    @GetMapping(path = "/confirm")
-    public ResponseEntity<AuthenticationResponse> confirm(@RequestParam("token") String token) {
-        return ResponseEntity.ok(service.confirmToken(token));
+    @GetMapping("/refreshToken/validate")
+    public ResponseEntity<Object> refreshToken(
+            HttpServletRequest request
+    ) {
+        return ResponseEntity.ok(service.refreshToken(request));
+    }
+
+    @GetMapping(path = "/confirm/{token}")
+    public ResponseEntity<AuthenticationResponse> confirm(@PathVariable("token") String token) throws Exception {
+        return ResponseEntity.ok(service.confirm(token));
     }
 
     @PostMapping("/resetPassword")
@@ -68,13 +83,18 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.resetPassword(request, email.getEmail()));
     }
 
-    @GetMapping("/forgotPassword")
-    public ResponseEntity<String> forgotPassword(@RequestParam("id") Long id, @RequestParam("token") String token) {
-        return ResponseEntity.ok(service.forgotPassword(id, token));
+    @GetMapping("/forgotPassword/{token}")
+    public ResponseEntity<String> forgotPassword(@PathVariable("token") String token) {
+        return ResponseEntity.ok(service.forgotPassword(token));
+    }
+
+    @GetMapping("/forgotPassword/cancel/{token}")
+    public ResponseEntity<AuthenticationResponse> forgotPasswordCancel(@PathVariable("token") String token) {
+        return ResponseEntity.ok(service.forgotPasswordCancel(token));
     }
 
     @PostMapping("/setPassword")
-    public ResponseEntity<Boolean> setPassword(@RequestBody ForgotPassword forgotPassword) {
+    public ResponseEntity<AuthenticationResponse> setPassword(@RequestBody ForgotPassword forgotPassword) {
         return ResponseEntity.ok(service.setPassword(forgotPassword));
     }
 
