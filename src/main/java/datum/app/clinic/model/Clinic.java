@@ -1,16 +1,15 @@
 package datum.app.clinic.model;
 
-import datum.user.User;
+import datum.app.therapy.model.Preiskurant;
+import datum.config.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.extern.jackson.Jacksonized;
-import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.OffsetDateTime;
+import java.io.Serializable;
 import java.util.*;
 
 @Data
@@ -19,7 +18,7 @@ import java.util.*;
 @AllArgsConstructor
 @Entity
 @Jacksonized
-public class Clinic {
+public class Clinic extends Auditable<String> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -28,16 +27,12 @@ public class Clinic {
     @Column(columnDefinition = "boolean default true")
     private Boolean enabled;
     private Boolean deleted;
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "clinicId")
-    private List<Department> departments;
+    private List<Department> departments = new ArrayList<>();
 
-//    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "clinic")
-//    private List<Privilege> privileges;
-
-    @JsonIgnore
-    @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    private OffsetDateTime date;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "clinicId")
+    private List<Preiskurant> preiskurants = new ArrayList<>();
 }

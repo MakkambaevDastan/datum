@@ -1,16 +1,15 @@
 package datum.app.clinic.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import datum.config.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
-import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.OffsetDateTime;
-import java.util.List;
+import java.io.Serializable;
 
 @Data
 @Builder
@@ -18,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Jacksonized
-public class Chair {
+public class Chair  extends Auditable<String> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,10 +28,17 @@ public class Chair {
     private Boolean enabled;
     private Boolean deleted;
 
-    @JsonIgnore
-//    @JsonProperty
-    @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    private OffsetDateTime date;
+//    @JsonIgnore
+////    @JsonProperty
+//    @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
+//    @CreationTimestamp
+//    @Temporal(TemporalType.TIMESTAMP)
+//    private OffsetDateTime date;
+//    @JsonIgnore
+//    @UpdateTimestamp
+//    private Instant lastUpdatedOn;
+//
+//    @JsonIgnore
+//    @CreationTimestamp
+//    private Instant createdOn;
 }

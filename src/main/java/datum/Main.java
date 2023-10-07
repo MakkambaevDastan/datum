@@ -1,26 +1,46 @@
 package datum;
 
-import datum.user.*;
+//import datum.user.*;
+import datum.authenticate.user.User;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.time.LocalDate;
+import java.util.Optional;
+import java.util.Random;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SpringBootApplication
 public class Main {
-//    public final static Pattern pattern = Pattern.compile("\\s");
-//    public final static Matcher matcher = pattern.matcher(s);
+    public static final Random random = new Random();
+    public static void main(String[] args) {
+        SpringApplication.run(Main.class, args);
+    }
+    public static Optional<Long> getUserId() {
+        return Optional.ofNullable(SecurityContextHolder.getContext())
+                .map(SecurityContext::getAuthentication)
+                .filter(Authentication::isAuthenticated)
+                .map(Authentication::getPrincipal)
+                .map(User.class::cast)
+                .map(User::getId);
+    }
+    public static boolean isInteger(String str) {
+        if (str == null) return false;
+        try {
+            int i = Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
     public static boolean isDateBithDay(String s) {
         return s.matches("\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|[3][01])");
     }
+
     public static boolean isLocalTime(String s) {
         return s.matches("([01]?[0-9]|2[0-3]):[0-5][0-9]");
     }
@@ -31,47 +51,10 @@ public class Main {
                 .matcher(emailAddress)
                 .matches();
     }
+
     @PostConstruct
     void started() {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
     }
-    public static void main(String[] args) {
-        SpringApplication.run(Main.class, args);
-//        AnnotationConfigApplicationContext app = new AnnotationConfigApplicationContext(UserRepository.class);
-//
-//        Test test = new Test(app.getBean(UserRepository.class));
-//        test.test();
-    }
 
-//
-//	@Bean
-//	public CommandLineRunner commandLineRunner(
-//			AuthenticationService service
-//	) {
-//		return args -> {
-//			var admin = UserDTO.builder()
-//					.firstname("Makkambaev")
-//					.email("makkambaevdastan@gmail.com")
-//					.birthDay("2020-12-21")
-//					.password("das")
-//					.build();
-//			HttpServletRequest request =
-//			service.register(request, admin);
-//
-////			System.out.println("makkambaevdastan@gmail.com token: " +
-////					service.register(HttpServletRequest, admin).getAccessToken());
-//
-//			var manager = UserDTO.builder()
-//					.firstname("Ababakirov")
-//					.email("user@mail.com")
-//					.birthDay("2020-12-30")
-//					.address("str. Masaliev 51")
-//					.phone("+996778585999")
-//					.password("juma")
-//					.build();
-//			System.out.println("user@mail.com token: " +
-//					service.register(manager).getAccessToken());
-//
-//		};
-//	}
 }

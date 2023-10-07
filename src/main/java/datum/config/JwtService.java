@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class JwtService {
 
-    @Value("${application.security.jwt.secret-key}")
+    @Value("${application.security.jwt.secret_key}")
     private String secretKey;
     @Value("${application.security.jwt.expiration}")
     private long jwtExpiration;
@@ -51,9 +51,6 @@ public class JwtService {
     public String generateRefreshToken(UserDetails userDetails) {
         return buildToken(new HashMap<>(), userDetails, refreshExpiration);
     }
-    public String generateConfirmToken(UserDetails userDetails) {
-        return buildToken(new HashMap<>(), userDetails, confirmExpiration);
-    }
 
     private String buildToken(
             Map<String, Object> extraClaims,
@@ -70,12 +67,12 @@ public class JwtService {
                 .compact();
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, String principal) {
         final String username = extractEmail(token);
-        return (username.equals(userDetails.getUsername().toLowerCase().trim())) && !isTokenExpired(token);
+        return (username.equals(principal)) && !isTokenExpired(token);
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 

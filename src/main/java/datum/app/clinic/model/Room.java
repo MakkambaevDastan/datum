@@ -1,18 +1,15 @@
 package datum.app.clinic.model;
 
+import datum.config.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.OffsetDateTime;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.LinkedList;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Jacksonized
-public class Room {
+public class Room  extends Auditable<String> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,11 +32,18 @@ public class Room {
 
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "roomId")
-    private List<Chair> chairs;
+    private List<Chair> chairs=new ArrayList<>();
 
-    @JsonIgnore
-    @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    private OffsetDateTime date;
+//    @JsonIgnore
+//    @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
+//    @CreationTimestamp
+//    @Temporal(TemporalType.TIMESTAMP)
+//    private OffsetDateTime date;
+//    @JsonIgnore
+//    @UpdateTimestamp
+//    private Instant lastUpdatedOn;
+//
+//    @JsonIgnore
+//    @CreationTimestamp
+//    private Instant createdOn;
 }
