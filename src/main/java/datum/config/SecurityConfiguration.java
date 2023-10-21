@@ -3,6 +3,7 @@ package datum.config;
 import jakarta.servlet.Filter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.Role;
 import org.apache.catalina.filters.CorsFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,8 +39,9 @@ public class SecurityConfiguration {
     private final LogoutHandler logoutHandler;
     private final CorsConfigurationSource corsConfigurationSource;
     private final String[] WHITE_LIST_URL = {
-            "/authenticate/**",
+            "/AUTHENTICATE/**",
             "/test",
+            "/test/**",
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
@@ -60,6 +62,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(WHITE_LIST_URL)
                                 .permitAll()
+                                .requestMatchers("/ADMIN/**").hasRole("ADMIN")
                                 .anyRequest()
                                 .authenticated()
                 )

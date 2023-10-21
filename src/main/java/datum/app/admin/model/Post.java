@@ -1,12 +1,15 @@
 package datum.app.admin.model;
 
 import datum.config.audit.Auditable;
+import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.io.Serializable;
 
@@ -16,10 +19,13 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Entity
 @Jacksonized
-public class Post  extends Auditable<String> implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@SQLDelete(sql = "update post set deleted=true where id=?")
+@Where(clause = "deleted = false")
+public class Post  extends Auditable<Long> implements Serializable {
+//    @Id
+//    @Tsid
+////    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
     private String code;
     private String en;
     private String ru;

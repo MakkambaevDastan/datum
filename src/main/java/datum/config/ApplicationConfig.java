@@ -1,7 +1,9 @@
 package datum.config;
 
-import datum.authenticate.user.UserRepository;
+import datum.app.clinic.service.PrivilegeService;
+import datum.authenticate.UserRepository;
 import datum.config.audit.SpringSecurityAuditorAware;
+import datum.config.exception.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.handler.MappedInterceptor;
+//import springfox.documentation.builders.PathSelectors;
+//import springfox.documentation.builders.RequestHandlerSelectors;
+//import springfox.documentation.spi.DocumentationType;
+//import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.List;
 
@@ -30,21 +37,23 @@ import java.util.List;
 //@EnableJpaRepositories
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 @RequiredArgsConstructor
+
 public class ApplicationConfig {
 
     private final UserRepository repository;
+    private final PrivilegeService privilegeService;
 
 
 
     @Bean
-    public AuditorAware<String> auditorProvider() {
+    public AuditorAware<Long> auditorProvider() {
         return new SpringSecurityAuditorAware();
     }
 
     @Bean
     public UserDetailsService userDetailsService() {
         return email -> repository.findByEmailIgnoreCase(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+                .orElseThrow(() -> new UsernameNotFoundException(Message.USER_NOT_FOUND));
     }
 
     @Bean
@@ -74,17 +83,20 @@ public class ApplicationConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 //    @Bean
-//    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-//        return new JwtAuthenticationFilter();
+//    public Docket api() {
+//        return new Docket(DocumentationType.SWAGGER_2)
+//                .select()
+//                .apis(RequestHandlerSelectors.any())
+//                .paths(PathSelectors.any())
+//                .build();
 //    }
-    //    @Bean
-//    @Description("Spring Message Resolver")
-//    public ResourceBundleMessageSource messageSource() {
-//        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-//        messageSource.setBasename("messages");
-//        return messageSource;
-//    }
+    @Bean
+    public MappedInterceptor mappedResponseHeaderInterceptor() {
+        return new MappedInterceptor(
+                new String[] { "/CLINIC/**",},
+                new ClinicInterceptor(privilegeService)
+        );
+    }
 
 }

@@ -3,9 +3,9 @@ package datum.config.exception;
 
 public class ExceptionApp extends RuntimeException{
     private final int code;
-    public ExceptionApp(int c, String msg){
-        super(msg);
-        code = c;
+    public ExceptionApp(int code, String message){
+        super(message);
+        this.code = code;
     }
 
     public int getCode() {

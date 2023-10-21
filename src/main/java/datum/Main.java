@@ -1,15 +1,15 @@
 package datum;
 
 //import datum.user.*;
-import datum.authenticate.user.User;
+
+import datum.authenticate.User;
+import datum.config.exception.ExceptionApp;
+import datum.config.exception.Message;
 import jakarta.annotation.PostConstruct;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Optional;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
@@ -17,27 +17,50 @@ import java.util.regex.Pattern;
 @SpringBootApplication
 public class Main {
     public static final Random random = new Random();
+
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
     }
-    public static Optional<Long> getUserId() {
-        return Optional.ofNullable(SecurityContextHolder.getContext())
-                .map(SecurityContext::getAuthentication)
-                .filter(Authentication::isAuthenticated)
-                .map(Authentication::getPrincipal)
-                .map(User.class::cast)
-                .map(User::getId);
+
+    public static Long getUserId() {
+        return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+//        return Stream.of(SecurityContextHolder.getContext())
+//                .map(SecurityContext::getAuthentication)
+//                .map(Authentication::getPrincipal)
+//                .map(User.class::cast)
+//                .map(User::getId)
+//                .findFirst()
+//                .orElseThrow();
     }
-    public static boolean isInteger(String str) {
-        if (str == null) return false;
+    public static int parseInt(String string) {
+        if (isInteger(string)) return Integer.parseInt(string);
+        throw new ExceptionApp(400, Message.INVALID_ID);
+    }
+    public static boolean isInteger(String string) {
+        if (string == null) return false;
         try {
-            int i = Integer.parseInt(str);
+            Integer.parseInt(string);
         } catch (NumberFormatException e) {
             return false;
         }
         return true;
     }
-    public static boolean isDateBithDay(String s) {
+    public static long parseLong(String string) {
+        if (isLong(string)) return Long.parseLong(string);
+        throw new ExceptionApp(400, Message.INVALID_ID);
+    }
+    public static boolean isLong(String string) {
+        if (string == null) return false;
+        try {
+            Long.parseLong(string);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+
+
+    public static boolean isDateOfBirth(String s) {
         return s.matches("\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|[3][01])");
     }
 

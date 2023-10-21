@@ -7,6 +7,7 @@ import datum.authenticate.token.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
@@ -29,14 +30,14 @@ public class LogoutService implements LogoutHandler {
     )  {
         final String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer "))
-            throw new ExceptionApp(401, "Ошибка авторизации");
+            throw new ExceptionApp(400, "Ошибка авторизации");
 
         final String jwt = authHeader.substring(7);
         final Optional<Token> storedToken = tokenRepository.findByToken(jwt);
         if (storedToken.isPresent()) {
             tokenRepository.delete(storedToken.get());
             SecurityContextHolder.clearContext();
-        } else throw new ExceptionApp(500, "Токен не найден");
+        } else throw new ExceptionApp(404, "Токен не найден");
     }
 
     public void logoutAll(
@@ -46,7 +47,7 @@ public class LogoutService implements LogoutHandler {
     ) {
         final String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer "))
-            throw new ExceptionApp(401, "Ошибка авторизации");
+            throw new ExceptionApp(400, "Ошибка авторизации");
         final String jwt = authHeader.substring(7);
         tokenService.deleteAllUserToken(jwt);
     }

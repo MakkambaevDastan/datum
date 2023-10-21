@@ -2,6 +2,9 @@ package datum.authenticate;
 
 import datum.config.LogoutService;
 import datum.authenticate.token.TokenService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/authenticate")
+@RequestMapping("/AUTHENTICATE")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
@@ -41,7 +44,7 @@ public class AuthenticationController {
             HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
-       service.confirm(request, response);
+        service.confirm(request, response);
     }
 
     @GetMapping("/authenticate")
@@ -87,19 +90,21 @@ public class AuthenticationController {
     @GetMapping("/logout")
     public void logout(
             HttpServletRequest request,
-                       HttpServletResponse response,
-                       Authentication authentication
+            HttpServletResponse response,
+            Authentication authentication
     ) {
         logoutService.logout(request, response, authentication);
     }
+
     @GetMapping("/logout/all")
     public void logoutAll(
             HttpServletRequest request,
-                       HttpServletResponse response,
-                       Authentication authentication
+            HttpServletResponse response,
+            Authentication authentication
     ) {
         logoutService.logoutAll(request, response, authentication);
     }
+
     @GetMapping("/refreshToken")
     public void accessToken(
             HttpServletRequest request,
@@ -107,6 +112,7 @@ public class AuthenticationController {
     ) throws IOException {
         tokenService.refreshToken(request, response);
     }
+
     @GetMapping("/changePassword")
     public void changePassword(
             HttpServletRequest request,
@@ -114,6 +120,7 @@ public class AuthenticationController {
     ) throws IOException {
         service.changePassword(request, response);
     }
+
     @GetMapping("/validate")
     public void refreshToken(
             HttpServletRequest request,

@@ -1,9 +1,9 @@
 package datum.app.admin.model;
 
-import lombok.*;
+//import lombok.*;
 
 import java.io.Serializable;
-import java.time.LocalTime;
+//import java.time.LocalTime;
 
 //@Data
 //@Builder

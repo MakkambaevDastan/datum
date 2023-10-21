@@ -1,6 +1,7 @@
 package datum.authenticate.token;
 
-import datum.authenticate.user.User;
+import datum.authenticate.User;
+import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,8 @@ import java.io.Serializable;
 public class Token implements Serializable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Tsid
+//  @GeneratedValue(strategy = GenerationType.IDENTITY)
   public Long id;
 
   @Column(unique = true)

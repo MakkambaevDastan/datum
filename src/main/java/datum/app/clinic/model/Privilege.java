@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Entity
 @Jacksonized
 @IdClass(PrivilegeID.class)
-public class Privilege  extends Auditable<String> implements Serializable {
+public class Privilege implements Serializable {
     @Id
     @Column(name = "clinicId")
     private Long clinicId;

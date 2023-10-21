@@ -1,6 +1,5 @@
 package datum.app.admin.model;
 
-import datum.config.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
@@ -10,14 +9,12 @@ import java.io.Serializable;
 
 @Data
 @Builder
-//@MappedSuperclass
-//@Immutable
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Jacksonized
 @IdClass(EndpointId.class)
-public class Endpoint  extends Auditable<String> implements Serializable {
+public class Endpoint implements Serializable {
     @Id
     @Column(name = "method", insertable = false, updatable = false)
     private String method;

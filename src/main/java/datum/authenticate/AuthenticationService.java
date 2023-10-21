@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import datum.Main;
 import datum.authenticate.token.TokenRepository;
 import datum.authenticate.token.TokenService;
-import datum.authenticate.user.*;
 import datum.config.JwtService;
 import datum.config.email.EmailDetails;
 import datum.config.email.EmailService;
@@ -57,7 +56,7 @@ public class AuthenticationService {
             if (header[2].contains(" "))
                 throw new ExceptionApp(400, "Пароль содержить пробел");
             User user = User.builder()
-                    .role(Role.valueOf(header[0]))
+                    .role(Role.USER)
                     .email(header[1])
                     .password(passwordEncoder.encode(header[2]))
                     .build();
@@ -177,7 +176,7 @@ public class AuthenticationService {
             if (Main.isInteger(header[1]))
                 code = Integer.valueOf(header[1]);
             User user = userRepository.findByEmailIgnoreCaseAndCode(header[0], code)
-                    .orElseThrow(() -> new ExceptionApp(404, "Не правильные данные"));
+                    .orElseThrow(() -> new ExceptionApp(400, "Не правильные данные"));
             code = Main.random.nextInt(100000, 999999);
             user.setPassword(null);
             user.setCode(code);
@@ -228,7 +227,7 @@ public class AuthenticationService {
                     .orElseThrow(() -> new ExceptionApp(404, "Пользователь не найден"));
 
                 if (!passwordEncoder.matches(header[1], user.getPassword()))
-                    throw new ExceptionApp(401, "Не правильный старый пароль");
+                    throw new ExceptionApp(400, "Не правильный старый пароль");
                 user.setPassword(passwordEncoder.encode(header[2]));
                 userRepository.save(user);
                 new ObjectMapper().writeValue(response.getOutputStream(), true);
