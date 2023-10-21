@@ -1,21 +1,20 @@
 package datum.app.clinic.dto;
 
-import datum.user.UserDTO;
+//import datum.app.clinic.model.Schedule;
+
+import datum.app.clinic.model.Schedule;
+import datum.authenticate.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
-import java.util.*;
 
 @Data
 @Builder
 @AllArgsConstructor
 @Jacksonized
 public class EmployeeDTO {
-    private Long post;
+    private String post;
     private UserDTO user;
-    private Boolean everyWeek;
-    private Boolean onEvenWeeks;
-    private final Map<String, String> start;
-    private final Map<String, String> end;
+    private Schedule schedule;
 }

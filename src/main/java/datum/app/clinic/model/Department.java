@@ -1,18 +1,19 @@
 package datum.app.clinic.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import datum.config.audit.Auditable;
+import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
-import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
-import java.time.OffsetDateTime;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.LinkedList;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,29 +22,15 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Jacksonized
-public class Department {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@SQLDelete(sql = "update department set deleted=true where id=?")
+@Where(clause = "deleted = false")
+public class Department  extends Auditable<Long> implements Serializable {
+
     private String name;
     private String address;
     private String phone;
-    @Column(columnDefinition = "boolean default true")
-    private Boolean enabled;
-    private Boolean deleted;
 
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name="departmentId")
-//    @JsonIgnore
-    private List<Employee> employees;
-
-    @OneToMany(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "departmentId")
-    private List<Room> rooms;
-    @JsonIgnore
-    @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    private OffsetDateTime date;
-
+    private List<Employee> employees = new ArrayList<>();
 }

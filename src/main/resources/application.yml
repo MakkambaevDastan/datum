@@ -1,4 +1,7 @@
 spring:
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
   datasource:
     url: jdbc:postgresql://localhost:5432/datum
     username: postgres
@@ -6,8 +9,8 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
-    show-sql: false
+      ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
         format_sql: true
@@ -25,41 +28,15 @@ spring:
     properties:
       mail:
         smtp:
-#          ssl:
-#            trust: "*"
           auth: true
           starttls:
             enable: true
-#          connectiontimeout: 5000
-#          timeout: 3000
-#          writetimeout: 5000
-
-#  mail:
-#    properties:
-#      mail:
-#        smtp:
-#          starttls:
-#            enable: 'true'
-#            required: 'true'
-#          auth: 'true'
-#          port: '25'
-#        transport:
-#          protocol: smtp
-#    host: email-smtp.us-west-2.amazonaws.com
-#    username: makkambaevdastan@gmail.com
-#    password:
-#management:
-#  endpoints:
-#    web:
-#      base-path: /actuator
-#      exposure:
-#        include: *
 application:
   security:
     jwt:
-      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      secret_key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
       expiration: 86400000 # 1 day
       refresh-token:
-        expiration: 604800000 # 7 days
+        expiration: 2592000000 # 30 days
       confirm:
         expiration: 3600000 # 1 hour

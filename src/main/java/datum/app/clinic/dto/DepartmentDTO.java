@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
 
-import java.util.List;
 
 @Data
 @Builder
@@ -17,5 +16,4 @@ public class DepartmentDTO {
     private String name;
     private String address;
     private String phone;
-    private List<RoomDTO> rooms;
 }
