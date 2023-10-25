@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/CLINIC/{clinicId}/EMPLOYEE/{employeeId}/DEPARTMENT/{departmentId}/EMPLOYEE/{id}/APPOINTMENT")
+@RequestMapping("/CLINIC/{clinicId}/employee/{employeeId}/department/{departmentId}/employee/{id}/appointment")
 public class AppointmentController {
     private final PersonRepository personRepository;
     private final AppointmentService appointmentService;

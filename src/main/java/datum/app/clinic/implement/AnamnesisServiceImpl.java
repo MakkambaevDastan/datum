@@ -1,6 +1,7 @@
 package datum.app.clinic.implement;
 
 import datum.app.clinic.model.Anamnesis;
+import datum.app.clinic.model.Employee;
 import datum.app.clinic.repositoy.AnamnesisRepository;
 import datum.app.clinic.repositoy.EmployeeRepository;
 import datum.app.clinic.service.AnamnesisService;
@@ -28,9 +29,8 @@ public class AnamnesisServiceImpl implements AnamnesisService {
     ) {
         if(!employeeRepository.existsByIdAndClinicId(id, clinicId))
             throw new ExceptionApp(404, Message.NOT_FOUND);
-        var anamnesis = anamnesisRepository.findAllByEmployeeId(id);
-        if (anamnesis.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        return anamnesis.get();
+        return anamnesisRepository.findAllByEmployeeId(id)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
     }
 
     @Override
@@ -42,9 +42,8 @@ public class AnamnesisServiceImpl implements AnamnesisService {
             long id,
             long anamnesisId
     ) {
-        var anamnesis = anamnesisRepository.findByIdAndClinicId(anamnesisId, clinicId);
-        if (anamnesis.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        return anamnesis.get();
+        return anamnesisRepository.findByIdAndClinicId(anamnesisId, clinicId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
     }
 
     @Override
@@ -56,10 +55,10 @@ public class AnamnesisServiceImpl implements AnamnesisService {
             long id,
             Anamnesis anamnesis
     ) {
-        var employee = employeeRepository.findByIdAndClinicId(id,clinicId);
-        if (employee.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        employee.get().addAnamnesis(anamnesis);
-        employeeRepository.save(employee.get());
+        Employee employee = employeeRepository.findByIdAndClinicId(id,clinicId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
+        employee.addAnamnesis(anamnesis);
+        employeeRepository.save(employee);
         return anamnesis;
     }
 
@@ -73,15 +72,14 @@ public class AnamnesisServiceImpl implements AnamnesisService {
             long anamnesisId,
             Anamnesis anamnesis
     ) {
-        var anamnesis1 = anamnesisRepository.findByIdAndClinicId(anamnesisId, clinicId);
-        if (anamnesis1.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
+        var anamnesis1 = anamnesisRepository.findByIdAndClinicId(anamnesisId, clinicId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
+        anamnesis1.setClinicalDiagnosis(anamnesis.getClinicalDiagnosis());
+        anamnesis1.setTooth(anamnesis.getTooth());
+        anamnesis1.setAnamnesisDetails(anamnesis.getAnamnesisDetails());
+        anamnesisRepository.save(anamnesis1);
 
-        anamnesis1.get().setClinicalDiagnosis(anamnesis.getClinicalDiagnosis());
-        anamnesis1.get().setTooth(anamnesis.getTooth());
-        anamnesis1.get().setAnamnesisDetails(anamnesis.getAnamnesisDetails());
-        anamnesisRepository.save(anamnesis1.get());
-
-        return anamnesis1.get();
+        return anamnesis1;
     }
 
     @Override

@@ -1,5 +1,8 @@
 package datum.app.clinic.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(enumAsRef = true)
 public enum CurrencyCode {
     AED("United Arab Emirates Dirham"),
     AFN("Afghanistan Afghani"),

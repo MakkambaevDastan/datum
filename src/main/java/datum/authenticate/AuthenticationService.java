@@ -46,19 +46,18 @@ public class AuthenticationService {
             HttpServletResponse response
     ) throws IOException {
         String[] header = headerDecode64(request);
-        if(header.length==3) {
-            if (!Main.isValidEmail(header[1]))
+        if(header.length==2) {
+            if (!Main.isValidEmail(header[0]))
                 throw new ExceptionApp(400, "Неправильный email");
-            if (checkEmail(header[1]))
+            if (checkEmail(header[0]))
                 throw new ExceptionApp(400, "Вы уже зарегистрированы войдите");
-            if (header[2].equals("") || header[1].equals(" "))
+            if (header[1].equals("") || header[1].equals(" "))
                 throw new ExceptionApp(400, "Пароль не может быть пустым");
-            if (header[2].contains(" "))
+            if (header[1].contains(" "))
                 throw new ExceptionApp(400, "Пароль содержить пробел");
             User user = User.builder()
-                    .role(Role.USER)
-                    .email(header[1])
-                    .password(passwordEncoder.encode(header[2]))
+                    .email(header[0])
+                    .password(passwordEncoder.encode(header[1]))
                     .build();
             new ObjectMapper().writeValue(response.getOutputStream(), register(user));
         } else throw new ExceptionApp(400, "Введите данные");
@@ -66,9 +65,11 @@ public class AuthenticationService {
 
     public Integer register(User user)  {
         Integer code = Main.random.nextInt(100000, 999999);
+        user.setRole(Role.USER);
         user.setCode(code);
         user.setEnabled(false);
         user.setLocked(true);
+        user.setDeleted(false);
         if (user.getId() != null)
             tokenService.deleteAllUserTokens(user);
         userRepository.save(user);

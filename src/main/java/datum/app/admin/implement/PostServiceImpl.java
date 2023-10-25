@@ -54,6 +54,7 @@ public class PostServiceImpl implements PostService {
                     .en("Owner")
                     .ru("Владелец")
                     .kg("Ээси")
+                            .deleted(false)
                     .build());
         if (!postRepository.existsByCode("HEAD"))
             posts.add(Post.builder()
@@ -61,6 +62,7 @@ public class PostServiceImpl implements PostService {
                     .en("Chief physician")
                     .ru("Главный врач")
                     .kg("Башкы дарыгер")
+                    .deleted(false)
                     .build());
         if (!postRepository.existsByCode("ADMIN"))
             posts.add(Post.builder()
@@ -68,6 +70,7 @@ public class PostServiceImpl implements PostService {
                     .en("Administrator")
                     .ru("Администратор")
                     .kg("Башкаруучу")
+                    .deleted(false)
                     .build());
         if (!postRepository.existsByCode("DENTIST"))
             posts.add(Post.builder()
@@ -75,6 +78,7 @@ public class PostServiceImpl implements PostService {
                     .en("Dentist")
                     .ru("Врач стоматолог")
                     .kg("Тиш доктур")
+                    .deleted(false)
                     .build());
         if (!postRepository.existsByCode("DENTAL_ASSISTANT"))
             posts.add(Post.builder()
@@ -82,6 +86,7 @@ public class PostServiceImpl implements PostService {
                     .en("Dental assistant")
                     .ru("Ассистент стоматолога")
                     .kg("Тиш доктур жардамчысы")
+                    .deleted(false)
                     .build());
         if (!postRepository.existsByCode("NURSE"))
             posts.add(Post.builder()
@@ -89,6 +94,7 @@ public class PostServiceImpl implements PostService {
                     .en("Nurse")
                     .ru("Медицинская сестра")
                     .kg("Медайым")
+                    .deleted(false)
                     .build());
         postRepository.saveAll(posts);
         System.out.println("Сохранение конечных точек");

@@ -1,6 +1,7 @@
 package datum.config;
 
 import datum.Main;
+import datum.app.clinic.model.Privilege;
 import datum.app.clinic.service.PrivilegeService;
 import datum.config.exception.ExceptionApp;
 import datum.config.exception.Message;
@@ -22,13 +23,14 @@ public class ClinicInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         var map = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        boolean privilege = privilegeService.getPrivilege(
+        Privilege privilege = privilegeService.getPrivilege(
                 request,
                 Main.parseLong(map.get("clinicId")),
                 Main.parseLong(map.get("employeeId"))
         );
-        if(privilege)
+        if(privilege.getBool())
             return true;
-        else throw new ExceptionApp(403, Message.FORBIDDEN);
+        else
+            throw new ExceptionApp(403, Message.FORBIDDEN);
     }
 }

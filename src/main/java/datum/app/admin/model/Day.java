@@ -2,6 +2,8 @@ package datum.app.admin.model;
 
 //import lombok.*;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.io.Serializable;
 //import java.time.LocalTime;
 
@@ -10,6 +12,18 @@ import java.io.Serializable;
 //@NoArgsConstructor
 //@AllArgsConstructor
 //@RequiredArgsConstructor
+//@Schema(enumAsRef = true,
+//        description = """
+//                MONDAY,
+//                TUESDAY,
+//                WEDNESDAY,
+//                THURSDAY,
+//                FRIDAY,
+//                SATURDAY,
+//                SUNDAY
+//                """)
+@Schema(name = "MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY",
+        description = "MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY")
 public enum Day implements Serializable {
     MONDAY,
     TUESDAY,

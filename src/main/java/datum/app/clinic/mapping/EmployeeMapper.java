@@ -24,10 +24,9 @@ public interface EmployeeMapper {
             final EmployeeDTO employeeDTO,
             final @Context PostRepository postRepository
     ) {
-        var post = postRepository.findByCode(employeeDTO.getPost());
-        if(post.isPresent())
-            employee.post(post.get());
-        else throw new ExceptionApp(400, "Не правильний пост");
+        employee.post(postRepository.findByCode(employeeDTO.getPost())
+                .orElseThrow(() -> new ExceptionApp(400, "Не правильний пост"))
+        );
     }
 
     List<Employee> convert(List<EmployeeDTO> employee, @Context PostRepository postRepository);

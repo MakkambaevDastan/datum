@@ -1,6 +1,7 @@
 package datum.app.clinic.controller;
 
 import datum.Main;
+import datum.app.admin.model.Post;
 import datum.app.admin.repository.PostRepository;
 import datum.app.clinic.dto.EmployeeDTO;
 import datum.app.clinic.mapping.EmployeeMapper;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/CLINIC/{clinicId}/EMPLOYEE/{employeeId}/DEPARTMENT/{departmentId}/EMPLOYEE")
+@RequestMapping("/CLINIC/{clinicId}/employee/{employeeId}/department/{departmentId}/employee")
 public class EmployeeController {
     private final PostRepository postRepository;
     private final EmployeeService employeeService;
@@ -75,7 +76,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}/post/{postId}")
-    public ResponseEntity<Employee> updateEmployee(
+    public ResponseEntity<Post> updateEmployee(
             HttpServletRequest request,
             @PathVariable("clinicId") String clinicId,
             @PathVariable("employeeId") String employeeId,
@@ -96,7 +97,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}/schedule")
-    public ResponseEntity<Employee> updateEmployee(
+    public ResponseEntity<Schedule> updateEmployee(
             HttpServletRequest request,
             @PathVariable("clinicId") String clinicId,
             @PathVariable("employeeId") String employeeId,

@@ -26,7 +26,7 @@ public interface ClinicRepository extends JpaRepository<Clinic, Long> {
     @Query(value = "SELECT * FROM clinic WHERE clinic.user_id=:userId", nativeQuery = true)
     Optional<List<Clinic>> findAllByUserId(Long userId);
 
-    @Query(value = "SELECT * FROM clinic WHER clinic.id=:clinicId AND clinic.user_id=:userId", nativeQuery = true)
+    @Query(value = "SELECT * FROM clinic WHERE clinic.id=:clinicId AND clinic.user_id=:userId", nativeQuery = true)
     Optional<Clinic> countByIdAndUserId(Long clinicId, Long userId);
     @Modifying
     @Query(value = "UPDATE clinic SET clinic.name = :name " +
@@ -34,13 +34,5 @@ public interface ClinicRepository extends JpaRepository<Clinic, Long> {
     void updateClinic(Long clinicId, Long userId, String name);
     @Query(value = "SELECT name FROM clinic WHERE clinic.id=:clinicId", nativeQuery = true)
     Optional<String> findNameById(Long clinicId);
-//    Boolean existsClinicByIdAndUserId()
-//    @Query(value = "SELECT COUNT(*) FROM clinic WHERE  ", nativeQuery = true)
-//    boolean existsByIdAndUserId(Long clinicId, Long userId);
-//    @Query(value = """
-//SELECT COUNT(*) FROM clinic
-//WHERE clinic.id=:clinicId
-//""", nativeQuery = true)
-//    int checkUser(Long clinicId, Long userId, String endpoint, String method);
 
 }

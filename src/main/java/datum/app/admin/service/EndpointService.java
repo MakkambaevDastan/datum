@@ -8,7 +8,7 @@ import java.util.List;
 public interface EndpointService {
     List<Endpoint> get();
 
-    List<Endpoint> create(List<Endpoint> endpoints);
+    Endpoint create(Endpoint endpoint);
 
     Endpoint update(Endpoint endpoint);
 

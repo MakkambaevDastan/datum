@@ -1,8 +1,10 @@
 package datum.config.audit;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -12,9 +14,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.io.Serializable;
 import java.time.Instant;
 
-@Getter
-@Setter
-@ToString
+//@Getter
+//@Setter
+//@ToString
+@Data
+@SuperBuilder
 @RequiredArgsConstructor
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
@@ -36,6 +40,7 @@ public abstract class Auditable<U> implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     protected Instant lastModifiedDate;
 
+    @JsonIgnore
     @Column(columnDefinition = "boolean default false")
     private Boolean deleted = false;
 

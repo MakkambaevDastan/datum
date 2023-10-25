@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/CLINIC/{clinicId}/EMPLOYEE/{employeeId}/PREISKURANT")
+@RequestMapping("/CLINIC/{clinicId}/employee/{employeeId}/preiskurant")
 public class PreiskurantController {
     private final PreiskurantService preiskurantService;
 
@@ -68,7 +68,7 @@ public class PreiskurantController {
     }
 
     @PutMapping("/{preiskurantId}/monetaryAmount")
-    public ResponseEntity<Preiskurant> updatePreiskurant(
+    public ResponseEntity<MonetaryAmount> updatePreiskurant(
             HttpServletRequest request,
             @PathVariable("clinicId") String clinicId,
             @PathVariable("employeeId") String employeeId,
@@ -87,7 +87,7 @@ public class PreiskurantController {
     }
 
     @PutMapping("/{preiskurantId}/description")
-    public ResponseEntity<Preiskurant> updatePreiskurant(
+    public ResponseEntity<String> updatePreiskurant(
             HttpServletRequest request,
             @PathVariable("clinicId") String clinicId,
             @PathVariable("employeeId") String employeeId,

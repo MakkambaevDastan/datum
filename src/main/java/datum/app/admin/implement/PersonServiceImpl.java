@@ -1,9 +1,13 @@
 package datum.app.admin.implement;
 
+import datum.app.admin.dto.PersonDTO;
+import datum.app.admin.mapping.PersonMapper;
 import datum.app.admin.model.Person;
 import datum.app.admin.repository.PersonRepository;
 import datum.app.admin.service.PersonService;
 import datum.app.clinic.repositoy.ClinicRepository;
+import datum.authenticate.User;
+import datum.authenticate.UserRepository;
 import datum.config.exception.ExceptionApp;
 import datum.config.exception.Message;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,23 +27,38 @@ import java.util.Map;
 public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepository;
     private final ClinicRepository clinicRepository;
+    private final UserRepository userRepository;
+
     @Override
     public Person get(long personId) {
         var person = personRepository.findById(personId);
-        if(person.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
+        if (person.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
         return person.get();
     }
+
     @Override
     public Person create(Person person) {
         return personRepository.save(person);
     }
 
     @Override
-    public Person create(long clinicId, Person person) {
-        var clinic = clinicRepository.findById(clinicId);
-        if(clinic.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        clinic.get().addPerson(person);
-        clinicRepository.save(clinic.get());
+    public Person createByUser(long userId, PersonDTO personDTO) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
+        if (user.getPerson() != null) PersonMapper.INSTANCE.update(personDTO, user.getPerson());
+        else user.setPerson(PersonMapper.INSTANCE.convert(personDTO));
+//        phoneRepository.deleteAll(user.getPerson().getPhone());
+//        user.getPerson().setPhone(PhoneMapper.INSTANCE.convert(personDTO.getPhone()));
+        userRepository.save(user);
+        return user.getPerson();
+    }
+
+    @Override
+    public Person createByClinic(long clinicId, Person person) {
+        var clinic = clinicRepository.findById(clinicId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
+        clinic.addPerson(person);
+        clinicRepository.save(clinic);
         return person;
     }
 
@@ -54,16 +73,15 @@ public class PersonServiceImpl implements PersonService {
 
 
     @Override
-    public  List<Person> getAllByClinic(
+    public List<Person> getAllByClinic(
             HttpServletRequest request,
             long clinicId,
             long employeeId
     ) {
         var person = personRepository.findAll(clinicId);
-        if(person.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
+        if (person.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
         return person.get();
     }
-
 
 
     @Override
@@ -75,10 +93,9 @@ public class PersonServiceImpl implements PersonService {
             int size
     ) {
         var person = personRepository.findAll(clinicId, page, size);
-        if(person.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
+        if (person.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
         return person.get();
     }
-
 
 
     @Override

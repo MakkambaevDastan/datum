@@ -6,6 +6,7 @@ import datum.app.admin.model.Post;
 import datum.app.admin.repository.EndpointRepository;
 import datum.app.admin.repository.PostRepository;
 import datum.app.clinic.model.Privilege;
+import datum.app.clinic.model.PrivilegeID;
 import datum.app.clinic.repositoy.ClinicRepository;
 import datum.app.clinic.repositoy.PrivilegeRepository;
 import datum.app.clinic.service.PrivilegeService;
@@ -29,27 +30,28 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     private final PostRepository postRepository;
 
     @Override
-    public boolean getPrivilege(
+    public Privilege getPrivilege(
             HttpServletRequest request,
             long clinicId,
             long employeeId
     ) {
-        var privilege = privilegeRepository.getPrivilegeBy(
-                clinicId,
-                request.getMethod(),
-                request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE).toString(),
-                employeeId
-        );
-        if (privilege.isPresent())
-            return privilege.get();
-        else throw new ExceptionApp(404, Message.NOT_FOUND);
+        return privilegeRepository.findById(PrivilegeID.builder()
+                .clinicId(clinicId)
+                .postId(employeeId)
+                .method(request.getMethod())
+                .endpoint(
+                        request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE).toString()
+                )
+                .build()
+        ).orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
     }
 
     @Override
     public List<Privilege> get(HttpServletRequest request, long clinicId) {
-        if(clinicRepository.countByIdAndUserId(clinicId, Main.getUserId()).isEmpty())
-            throw new ExceptionApp(404, Message.NOT_FOUND);
-        List<Privilege> privileges = privilegeRepository.getPrivilegeFromClinicId(clinicId).get();
+        clinicRepository.countByIdAndUserId(clinicId, Main.getUserId())
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
+        List<Privilege> privileges = privilegeRepository.getPrivilegeFromClinicId(clinicId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
         List<Endpoint> endpoints = endpointRepository.findAll();
         List<Post> posts = postRepository.findAll();
         if (privileges.size() == posts.size() * endpoints.size()) return privileges;
@@ -76,7 +78,7 @@ public class PrivilegeServiceImpl implements PrivilegeService {
                 }
             }
             if (newPrivileges.size() > 0) {
-                newPrivileges.forEach(p -> privilegeRepository.save(p));
+                privilegeRepository.saveAll(newPrivileges);
                 privileges.addAll(newPrivileges);
             }
         } else {
@@ -93,7 +95,7 @@ public class PrivilegeServiceImpl implements PrivilegeService {
                     );
                 }
             }
-            privileges.forEach(p -> privilegeRepository.save(p));
+            privilegeRepository.saveAll(privileges);
         }
         return privileges;
     }
@@ -104,11 +106,11 @@ public class PrivilegeServiceImpl implements PrivilegeService {
             long clinicId,
             List<Privilege> privileges
     ) {
-        if(clinicRepository.countByIdAndUserId(clinicId, Main.getUserId()).isEmpty())
+        if (clinicRepository.countByIdAndUserId(clinicId, Main.getUserId()).isEmpty())
             throw new ExceptionApp(404, Message.NOT_FOUND);
-        try{
+        try {
             privilegeRepository.saveAll(privileges);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ExceptionApp(400, Message.INVALID_ID);
         }
         return privileges;

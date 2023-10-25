@@ -11,6 +11,21 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 
 @OpenAPIDefinition(
+        info = @Info(
+//                contact = @Contact(
+//                        name = "Alibou",
+//                        email = "contact@aliboucoding.com",
+//                        url = "https://aliboucoding.com/course"
+//                ),
+                description = "datum crm system",
+                title = "datum",
+                version = "1.0",
+//                license = @License(
+//                        name = "Licence name",
+//                        url = "https://some-url.com"
+//                ),
+                termsOfService = "http://swagger.io/terms/"
+        ),
         servers = {
                 @Server(
                         description = "Local ENV",

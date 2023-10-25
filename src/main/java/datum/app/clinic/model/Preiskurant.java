@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.SQLDelete;
@@ -15,13 +16,14 @@ import org.hibernate.type.SqlTypes;
 import java.io.Serializable;
 
 @Data
-@Builder
+//@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Jacksonized
 @SQLDelete(sql = "update preiskurant set deleted=true where id=?")
-@Where(clause = "deleted = false")
+@Where(clause = "deleted = false or deleted is null")
 public class Preiskurant  extends Auditable<Long> implements Serializable {
 
     @Column(columnDefinition = "TEXT")

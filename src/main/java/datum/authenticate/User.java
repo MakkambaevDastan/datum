@@ -15,6 +15,8 @@ import java.util.*;
 
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,8 +29,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "users")
 @ToString
 @Jacksonized
-//@SQLDelete(sql = "update User set deleted=true where id=?")
-//@Where(clause = "deleted = false")
+@SQLDelete(sql = "update User set deleted=true where id=?")
+@Where(clause = "deleted = false or deleted is null")
 public class User implements UserDetails , Serializable {
     @Id
     @Tsid
@@ -43,7 +45,8 @@ public class User implements UserDetails , Serializable {
     @JsonIgnore
     private Boolean enabled;
     @JsonIgnore
-    private Boolean deleted;
+    @Column(columnDefinition = "boolean default false", nullable = false)
+    private Boolean deleted ;
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
@@ -51,7 +54,7 @@ public class User implements UserDetails , Serializable {
     public Integer code;
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Token> tokens;
+    private List<Token> tokens = new ArrayList<>();
 
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumn

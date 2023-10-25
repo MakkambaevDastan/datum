@@ -25,9 +25,8 @@ public class DepartmentServiceImpl implements DepartmentService {
             long clinicId,
             long employeeId
     ) {
-        var dep = departmentRepository.findAllByClinicId(clinicId);
-        if (dep.isPresent()) return dep.get();
-        throw new ExceptionApp(404, Message.NOT_FOUND);
+        return departmentRepository.findAllByClinicId(clinicId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
     }
 
     @Override
@@ -37,9 +36,8 @@ public class DepartmentServiceImpl implements DepartmentService {
             long employeeId,
             long departmentId
     ) {
-        var dep = departmentRepository.findByIdAndClinicId(departmentId, clinicId);
-        if (dep.isPresent()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        return dep.get();
+        return departmentRepository.findByIdAndClinicId(departmentId, clinicId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
     }
 
     @Override
@@ -64,13 +62,13 @@ public class DepartmentServiceImpl implements DepartmentService {
             long departmentId,
             Department department
     ) {
-        var dep = departmentRepository.findByIdAndClinicId(departmentId, clinicId);
-        if (dep.isPresent()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        dep.get().setName(department.getName());
-        dep.get().setAddress(department.getAddress());
-        dep.get().setPhone(department.getPhone());
-        departmentRepository.save(dep.get());
-        return dep.get();
+        Department dep = departmentRepository.findByIdAndClinicId(departmentId, clinicId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
+        dep.setName(department.getName());
+        dep.setAddress(department.getAddress());
+        dep.setPhone(department.getPhone());
+        departmentRepository.save(dep);
+        return dep;
     }
 
     @Override

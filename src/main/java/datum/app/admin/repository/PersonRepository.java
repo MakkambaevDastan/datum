@@ -30,4 +30,14 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
             WHERE department.clinic_id = :clinicId
             """, nativeQuery = true)
     Optional<List<Person>> findAll(long clinicId);
+    @Query(value =
+            """
+            SELECT person.* FROM person
+            INNER JOIN users ON person.id = users.person_id
+            WHERE users.id = :userId
+            AND person.id = :personId
+            """, nativeQuery = true)
+    Optional<Person> findByIdAndUserId(long personId, long userId);
+
+//    Optional<Person> findByName(String dastan);
 }

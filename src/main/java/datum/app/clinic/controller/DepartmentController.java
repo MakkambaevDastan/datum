@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/CLINIC/{clinicId}/EMPLOYEE/{employeeId}/DEPARTMENT")
+@RequestMapping("/CLINIC/{clinicId}/employee/{employeeId}/department")
 public class DepartmentController {
     private final DepartmentService departmentService;
     //=================================================================================================

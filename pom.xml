@@ -17,7 +17,7 @@
         <java.version>17</java.version>
 
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
-
+            <testcontainers.version>1.19.1</testcontainers.version>
     </properties>
     <dependencies>
         <dependency>
@@ -70,6 +70,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -149,7 +150,40 @@
             <version>5.2.5</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>1.19.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>1.19.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>1.19.1</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.openapitools/openapi-generator-maven-plugin -->
 <!--        <dependency>-->
+<!--            <groupId>org.openapitools</groupId>-->
+<!--            <artifactId>openapi-generator-maven-plugin</artifactId>-->
+<!--            <version>7.0.1</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+
+        <!--        <dependency>-->
 <!--            <groupId>io.springfox</groupId>-->
 <!--            <artifactId>springfox-boot-starter</artifactId>-->
 <!--            <version>3.0.0</version>-->
@@ -161,6 +195,17 @@
 <!--        </dependency>-->
 
     </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainers.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <build>
         <plugins>
             <plugin>
@@ -233,6 +278,59 @@
                     </execution>
                 </executions>
             </plugin>
+<!--            <plugin>-->
+<!--                <groupId>io.openapitools.swagger</groupId>-->
+<!--                <artifactId>swagger-maven-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <resourcePackages>-->
+<!--                        <resourcePackage>io.openapitools.swagger.example</resourcePackage>-->
+<!--                        <resourcePackage>io.openapitools.swagger.example.alternate</resourcePackage>-->
+<!--                    </resourcePackages>-->
+<!--                    <outputDirectory>${basedir}/target/</outputDirectory>-->
+<!--                    <outputFilename>swagger</outputFilename>-->
+<!--                    <outputFormats>JSON,YAML</outputFormats>-->
+<!--                    <prettyPrint>true</prettyPrint>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>generate</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.openapitools</groupId>-->
+<!--                <artifactId>openapi-generator-maven-plugin</artifactId>-->
+<!--                <version>7.0.1</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>generate</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <inputSpec>${project.basedir}src/main/java/datum/SOP.yml</inputSpec>-->
+<!--                            <generatorName>java</generatorName>-->
+<!--                            <generateApiDocumentation>false</generateApiDocumentation>-->
+<!--                            <generateApiTests>false</generateApiTests>-->
+<!--                            <generateModelDocumentation>false</generateModelDocumentation>-->
+<!--                            <generateModelTests>false</generateModelTests>-->
+<!--                            <generateApiTests>false</generateApiTests>-->
+<!--                            <generateSupportingFiles>false</generateSupportingFiles>-->
+<!--                            <library>resttemplate</library>-->
+<!--                            <modelPackage>src/main/java/datum</modelPackage>-->
+<!--                            <configOptions>-->
+<!--                                <interfaceOnly>true</interfaceOnly>-->
+<!--                                <useJakartaEe>true</useJakartaEe>-->
+<!--                                <sourceFolder>src/main/java/datum</sourceFolder>-->
+<!--                                <generateApis>false</generateApis>-->
+<!--                                <useSpringBoot3>true</useSpringBoot3>-->
+<!--                            </configOptions>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+
         </plugins>
     </build>
 

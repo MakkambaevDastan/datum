@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ADMIN/ICD10")
+@RequestMapping("/ADMIN/icd10")
 @RequiredArgsConstructor
 public class ICD10Controller {
 

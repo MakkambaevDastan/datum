@@ -15,7 +15,7 @@ public interface UserMapper {
 
     @Mapping(source = "password", target = "password", qualifiedByName = "encryptPassword")
     @Mapping(source = "email", target = "email", qualifiedByName = "lowerCase")
-    @Mapping(source = "role", target = "role", qualifiedByName = "toRole")
+//    @Mapping(source = "role", target = "role", qualifiedByName = "toRole")
     @Mapping(target = "enabled", constant = "true")
     @Mapping(target = "deleted", constant = "false")
     User convert(UserDTO userDTO);

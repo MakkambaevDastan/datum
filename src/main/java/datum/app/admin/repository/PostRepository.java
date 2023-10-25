@@ -2,11 +2,13 @@ package datum.app.admin.repository;
 
 import datum.app.admin.model.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
     boolean existsByCode(String head);
+    @Query("SELECT p FROM Post p WHERE p.code = :code")
     Optional<Post> findByCode(String code);
 //    @Modifying
 //    @Query(value = "INSERT INTO Post (code, en, ru, kg) " +

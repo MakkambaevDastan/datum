@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Service
@@ -20,7 +21,7 @@ public class ICD10ServiceImpl implements ICD10Service {
 
     @Override
     public List<ICD10> getDental() {
-        var icd10s = icd10Repository.findAllByBlockAndCategoryBetween("K", 0, 14);
+        Optional<List<ICD10>> icd10s = icd10Repository.findAllByBlockAndCategoryBetween("K", 0, 14);
         if (icd10s.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
         return icd10s.get();
     }
@@ -42,27 +43,25 @@ public class ICD10ServiceImpl implements ICD10Service {
     public List<ICD10> create(List<ICD10> icd10s) {
         Function<String, String> cyrillicToLatin = CyrillicLatinConverter::cyrilicToLatin;
         icd10s.forEach(icd10 -> {
-            if (Main.isInteger(icd10.getName().substring(5, 6))) {
-                var code = icd10.getName().substring(0, 6).toUpperCase().trim();
-                if (!(code.charAt(0) >= 'A' && code.charAt(0) <= 'Z'))
-                    code = cyrillicToLatin.apply(code);
-                var name = icd10.getName().substring(6).trim();
-                if (code.substring(3, 4).equals(".")) {
-                    icd10.setCode(code);
-                    var block = code.substring(0, 1).toUpperCase();
-                    var category = Integer.parseInt(code.substring(1, 3));
-                    var subcategory = Integer.parseInt(code.substring(4, 5));
-                    var item = Integer.parseInt(code.substring(5, 6));
+            String code = icd10.getName().substring(0, 6).toUpperCase().trim();
+            if (!code.substring(3, 4).equals(".") || !Main.isInteger(code.substring(5)))
+                throw new ExceptionApp(400, "Не правильный код MKБ-10: " + code);
+            if (!(code.charAt(0) >= 'A' && code.charAt(0) <= 'Z'))
+                code = cyrillicToLatin.apply(code);
+            String name = icd10.getName().substring(6).trim();
+                icd10.setCode(code);
+                String block = code.substring(0, 1).toUpperCase();
+                int category = Integer.parseInt(code.substring(1, 3));
+                int subcategory = Integer.parseInt(code.substring(4, 5));
+                int item = Integer.parseInt(code.substring(5, 6));
 
-                    var icd = icd10Repository.findFirstByBlock(block);
-                    icd10.setChapter(icd.getChapter());
-                    icd10.setBlock(block);
-                    icd10.setCategory(category);
-                    icd10.setSubcategory(subcategory);
-                    icd10.setItem(item);
-                    icd10.setName(name);
-                }
-            } else throw new ExceptionApp(400, "Не правильный код MKБ-10: " + icd10.getName());
+                ICD10 icd = icd10Repository.findFirstByBlock(block);
+                icd10.setChapter(icd.getChapter());
+                icd10.setBlock(block);
+                icd10.setCategory(category);
+                icd10.setSubcategory(subcategory);
+                icd10.setItem(item);
+                icd10.setName(name);
         });
         icd10Repository.saveAll(icd10s);
         return icd10s;

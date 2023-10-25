@@ -29,13 +29,8 @@ public class EndpointServiceImpl implements EndpointService {
 
 
     @Override
-    public List<Endpoint> create(List<Endpoint> endpoints) {
-        try {
-            var result = endpointRepository.saveAll(endpoints);
-            return result;
-        } catch (Exception e) {
-            throw new ExceptionApp(400, "Ошибка сохранение точки");
-        }
+    public Endpoint create(Endpoint endpoint) {
+            return  endpointRepository.save(endpoint);
     }
 
     @Override

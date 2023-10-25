@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ADMIN/ENDPOINT")
+@RequestMapping("/ADMIN/endpoint")
 @RequiredArgsConstructor
 public class EndpointController {
     private final EndpointService endpointService;
@@ -19,12 +19,19 @@ public class EndpointController {
     public ResponseEntity<List<Endpoint>> getEndpoint() {
         return ResponseEntity.ok(endpointService.get());
     }
+    @PostMapping
+    public ResponseEntity<Endpoint> createEndpoint(
+            @RequestBody Endpoint endpoint
+    ) {
+        return ResponseEntity.ok(endpointService.create(endpoint));
+    }
     @PutMapping
     public ResponseEntity<Endpoint> updateEndpoint(
             @RequestBody Endpoint endpoint
     ) {
         return ResponseEntity.ok(endpointService.update(endpoint));
     }
+
 
     @DeleteMapping
     public void deleteEndpoint(

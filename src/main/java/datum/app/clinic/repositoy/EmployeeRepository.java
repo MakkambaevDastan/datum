@@ -9,14 +9,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-//    @Query(value = "SELECT * FROM employee INNER JOIN " +
-//                   "    (SELECT DISTINCT employee.department_id " +
-//                   "    FROM users INNER JOIN " +
-//                   "        employee ON users.id = employee.user_id " +
-//                   "    WHERE users.id=:userId)" +
-//                   "AS department ON employee.department_id = department.department_id " +
-//                   "WHERE employee.id=:employeeId",
-//            nativeQuery = true)findByIdExistsEmployeeId
+    @Query(value = """
+            SELECT *
+            FROM employee
+            WHERE employee.user_id = :userId
+            """, nativeQuery = true)
+Optional<List<Employee>> findAllByUserId(long userId);
     @Query(value = """
     SELECT
         CASE WHEN COUNT(*)> 0 THEN TRUE ELSE FALSE END

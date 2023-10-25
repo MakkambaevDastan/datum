@@ -1,6 +1,10 @@
 package datum.authenticate;
 
 import datum.app.admin.dto.PersonDTO;
+import datum.app.clinic.model.ToothCondition;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 
@@ -10,12 +14,14 @@ import lombok.extern.jackson.Jacksonized;
 @NoArgsConstructor
 @ToString
 @Jacksonized
+@Schema
 public class UserDTO {
-//    @Email
+    @Email
+    @Schema(example = "user@gmail.com", description = "email")
+    @NotBlank
     private String email;
-//    @NotBlank
+    @NotBlank
     private String password;
-//    @NotEmpty
-    private Role role;
+    @Schema(implementation = PersonDTO.class)
     private PersonDTO person;
 }

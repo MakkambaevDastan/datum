@@ -8,5 +8,5 @@ public class Message {
     public static final String INVALID_ID = "Не правильный идентификатор";
     public static final String NOT_FOUND = "Запрашиваемый ресурс не найден";
     public static final String FORBIDDEN = "Запрещенный ресурс";
-
+    public static final String INTERNAL_SERVER_ERROR = "Внутренняя ошибка сервера";
 }

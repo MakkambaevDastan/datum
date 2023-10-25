@@ -1,6 +1,8 @@
 package datum.app.clinic.controller;
 
 import datum.Main;
+import datum.app.admin.dto.PersonDTO;
+import datum.app.admin.mapping.PersonMapper;
 import datum.app.admin.model.Person;
 import datum.app.admin.service.PersonService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/CLINIC/{clinicId}/EMPLOYEE/{employeeId}")
+@RequestMapping("/CLINIC/{clinicId}/employee/{employeeId}")
 public class ClinicController {
 
     private final PersonService personService;
@@ -31,6 +33,7 @@ public class ClinicController {
                 )
         );
     }
+
     @GetMapping("/person/{page}/{size}")
     public ResponseEntity<List<Person>> getPageByClinic(
             HttpServletRequest request,
@@ -49,7 +52,20 @@ public class ClinicController {
                 )
         );
     }
-    @RequestMapping(value = "/person", method = {RequestMethod.POST, RequestMethod.PUT})
+
+    @PostMapping(value = "/person" )
+    public ResponseEntity<Person> createPerson(
+            HttpServletRequest request,
+            @PathVariable("clinicId") String clinicId,
+            @PathVariable("employeeId") String employeeId,
+            @RequestBody PersonDTO personDTO
+            ) {
+        Person person = PersonMapper.INSTANCE.convert(personDTO);
+        return ResponseEntity.ok(
+                personService.createByClinic(Main.parseLong(clinicId), person)
+        );
+    }
+    @PutMapping(value = "/person")
     public ResponseEntity<Person> updatePerson(
             HttpServletRequest request,
             @PathVariable("clinicId") String clinicId,
@@ -57,11 +73,10 @@ public class ClinicController {
             @RequestBody Person person
     ) {
         return ResponseEntity.ok(
-                personService.create(Main.parseLong(clinicId),person)
+                personService.createByClinic(Main.parseLong(clinicId), person)
         );
     }
     //=================================================================================================
-
 
 
     //=================================================================================================

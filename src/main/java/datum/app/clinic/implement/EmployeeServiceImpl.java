@@ -1,5 +1,7 @@
 package datum.app.clinic.implement;
 
+import datum.app.admin.model.Post;
+import datum.app.clinic.model.Department;
 import datum.app.clinic.model.Employee;
 import datum.app.clinic.model.Schedule;
 import datum.app.clinic.repositoy.DepartmentRepository;
@@ -29,52 +31,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final AuthenticationService authenticationService;
     private final DepartmentRepository departmentRepository;
     private final PostRepository postRepository;
-
-    //    @Override
-//    public List<Employee> employee(long id, List<EmployeeDTO> employeeDTOs) {
-//        var userId = Main.getUserId();
-////        if(userId.isPresent()) {
-//        var department = departmentRepository.getWhereIdAndUserId(id, userId, "OWNER");
-//        if (department.isPresent()) {
-//            String email = SecurityContextHolder.getContext().getAuthentication().getName();
-//            List<Employee> employees = EmployeeMapper.INSTANCE.convert(employeeDTOs, postRepository);
-//            User user = null;
-//            for (Employee employee : employees) {
-//                if (!Objects.isNull(employee.getUser()) &&
-//                    !userRepository.existsByEmailIgnoreCase(
-//                            email = employee.getUser().getEmail().trim().toLowerCase()
-//                    )
-//                ) authenticationService.register(employee.getUser());
-//                user = userRepository.findByEmailIgnoreCase(email).orElseThrow();
-//                employee.setUser(user);
-//                employeeRepository.save(employee);
-//                if (Objects.isNull(department.get().getEmployees()))
-//                    department.get().setEmployees(List.of(employee));
-//                else
-//                    department.get().getEmployees().add(employee);
-//            }
-//            departmentRepository.save(department.get());
-//            return department.get().getEmployees();
-//        }
-//        throw new ExceptionApp(404, "Отдел не найден");
-////        } throw new ExceptionApp(404, "Пользователь не найден");
-//    }
-//
     @Override
-    public List<Employee> employee() {
-        var user = userRepository.findById(Main.getUserId());
-        if (user.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        return user.get().getEmployee();
+    public List<Employee> getEmployeeUser() {
+        return employeeRepository.findAllByUserId(Main.getUserId())
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
     }
-//
-//    @Override
-//    public Schedule schedule(long id, Schedule schedule) {
-//        Employee employee = employeeRepository.findById(id).orElseThrow();
-//        employee.setSchedule(schedule);
-//        employeeRepository.save(employee);
-//        return schedule;
-//    }
-
     @Override
     public List<Employee> get(
             HttpServletRequest request,
@@ -82,9 +43,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             long employeeId,
             long departmentId
     ) {
-        var empl = employeeRepository.findAllByDepartmentIdAndClinicId(departmentId, clinicId);
-        if (empl.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        return empl.get();
+        return employeeRepository.findAllByDepartmentIdAndClinicId(departmentId, clinicId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
     }
 
     @Override
@@ -95,12 +55,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             long departmentId,
             long id
     ) {
-        var empl = employeeRepository.findByIdAndClinicId(
-                id,
-                clinicId
-        );
-        if (empl.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        return empl.get();
+        return employeeRepository.findByIdAndClinicId(id, clinicId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
     }
 
     @Override
@@ -111,38 +67,36 @@ public class EmployeeServiceImpl implements EmployeeService {
             long departmentId,
             List<Employee> employees
     ) {
-        var userId = Main.getUserId();
-        var department =
-                departmentRepository.getWhereIdAndUserId(
-                        departmentId,
-                        userId,
-                        "OWNER"
-                );
-        if (department.isPresent()) {
-            String email = SecurityContextHolder.getContext().getAuthentication().getName();
-            User user;
-            for (Employee employee : employees) {
-                if (!Objects.isNull(employee.getUser()) &&
-                    !userRepository.existsByEmailIgnoreCase(
-                            email = employee.getUser().getEmail().trim().toLowerCase()
-                    )
-                ) authenticationService.register(employee.getUser());
-                user = userRepository.findByEmailIgnoreCase(email).orElseThrow();
-                employee.setUser(user);
-                employeeRepository.save(employee);
-                if (Objects.isNull(department.get().getEmployees()))
-                    department.get().setEmployees(List.of(employee));
-                else
-                    department.get().getEmployees().add(employee);
-            }
-            departmentRepository.save(department.get());
-            return department.get().getEmployees();
+        Department department = departmentRepository.getWhereIdAndUserId(
+                departmentId,
+                Main.getUserId(),
+                "OWNER"
+        ).orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user;
+        for (Employee employee : employees) {
+            if (!Objects.isNull(employee.getUser()) &&
+                !userRepository.existsByEmailIgnoreCase(
+                        email = employee.getUser().getEmail().trim().toLowerCase()
+                )
+            ) authenticationService.register(employee.getUser());
+            user = userRepository.findByEmailIgnoreCase(email)
+                    .orElseThrow(() ->
+                            new ExceptionApp(500, Message.INTERNAL_SERVER_ERROR)
+                    );
+            employee.setUser(user);
+            employeeRepository.save(employee);
+            if (Objects.isNull(department.getEmployees()))
+                department.setEmployees(List.of(employee));
+            else
+                department.getEmployees().add(employee);
         }
-        throw new ExceptionApp(404, "Отдел не найден");
+        departmentRepository.save(department);
+        return department.getEmployees();
     }
 
     @Override
-    public Employee update(
+    public Post update(
             HttpServletRequest request,
             long clinicId,
             long employeeId,
@@ -151,13 +105,14 @@ public class EmployeeServiceImpl implements EmployeeService {
             long postId
     ) {
         employeeRepository.updatePostByClinicId(id, postId, clinicId);
-        var employee = employeeRepository.findById(id);
-        if (employee.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        return employee.get();
+        return employeeRepository.findById(id)
+                .orElseThrow(() ->
+                        new ExceptionApp(500, Message.INTERNAL_SERVER_ERROR))
+                .getPost();
     }
 
     @Override
-    public Employee update(
+    public Schedule update(
             HttpServletRequest request,
             long clinicId,
             long employeeId,
@@ -166,9 +121,10 @@ public class EmployeeServiceImpl implements EmployeeService {
             Schedule schedule
     ) {
         employeeRepository.updateScheduleByClinicId(id, schedule, clinicId);
-        var employee = employeeRepository.findById(id);
-        if (employee.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        return employee.get();
+        return employeeRepository.findById(id)
+                .orElseThrow(() ->
+                        new ExceptionApp(500, Message.INTERNAL_SERVER_ERROR))
+                .getSchedule();
     }
 
     @Override

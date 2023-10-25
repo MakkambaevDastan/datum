@@ -22,7 +22,7 @@ public interface PrivilegeRepository extends JpaRepository<Privilege, PrivilegeI
             AND privilege.endpoint = :endpoint
             AND employee.id = :employeeId
     """, nativeQuery = true)
-    Optional<Boolean> getPrivilegeBy(
+    Optional<Boolean> getPrivilegeById(
             Long clinicId,
             String method,
             String endpoint,

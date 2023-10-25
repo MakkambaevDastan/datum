@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/CLINIC/{clinicId}/EMPLOYEE/{employeeId}/DEPARTMENT/{departmentId}/EMPLOYEE/{id}/ANAMNESIS")
+@RequestMapping("/CLINIC/{clinicId}/employee/{employeeId}/department/{departmentId}/employee/{id}/anamnesis")
 public class AnamnesisController {
     private final AnamnesisService anamnesisService;
     private final ICD10Repository icd10Repository;

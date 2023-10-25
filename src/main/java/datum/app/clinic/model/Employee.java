@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.SQLDelete;
@@ -19,13 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Builder
+//@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Jacksonized
 @SQLDelete(sql = "update employee set deleted=true where id=?")
-@Where(clause = "deleted = false")
+@Where(clause = "deleted = false or deleted is null")
 public class Employee  extends Auditable<Long> implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
     private Post post;

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/USER/CLINIC/{clinicId}/PRIVILEGE")
+@RequestMapping("/USER/clinic/{clinicId}/privilege")
 @RequiredArgsConstructor
 public class PrivilegeController {
     private final PrivilegeService privilegeService;

@@ -2,6 +2,7 @@ package datum.app.clinic.implement;
 
 import datum.Main;
 import datum.app.clinic.model.Appointment;
+import datum.app.clinic.model.Employee;
 import datum.app.clinic.repositoy.AppointmentRepository;
 import datum.app.clinic.repositoy.EmployeeRepository;
 import datum.app.clinic.service.AppointmentService;
@@ -29,10 +30,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     ) {
         if(!employeeRepository.existsByIdAndClinicId(id,clinicId))
             throw new ExceptionApp(404, Message.NOT_FOUND);
-        var app = appointmentRepository.findAllByEmployeeId(id);
-        if (app.isEmpty())
-            throw new ExceptionApp(404, Message.NOT_FOUND);
-        return app.get();
+        return appointmentRepository.findAllByEmployeeId(id)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
     }
 
     @Override
@@ -44,9 +43,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             long id,
             long appointmentId
     ) {
-        var app = appointmentRepository.findById(appointmentId);
-        if (app.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        return app.get();
+        return appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
     }
 
     @Override
@@ -58,10 +56,9 @@ public class AppointmentServiceImpl implements AppointmentService {
             long id,
             Appointment appointment
     ) {
-        var empl = employeeRepository.findByIdAndClinicId(id, clinicId);
-        if (empl.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        empl.get().getAppointments().add(appointment);
-        employeeRepository.save(empl.get());
+        Employee empl = employeeRepository.findByIdAndClinicId(id, clinicId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
+        employeeRepository.save(empl);
         return appointment;
     }
 
@@ -75,9 +72,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             long appointmentId,
             Appointment appointment
     ) {
-        var app = appointmentRepository.findByIdAndClinicId(appointmentId, clinicId);
-        if (app.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        var appointment1 = app.get();
+        Appointment appointment1 = appointmentRepository.findByIdAndClinicId(appointmentId, clinicId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
         appointment1.setDescription(appointment.getDescription());
         appointment1.setVisible(appointment.getVisible());
         appointment1.setPerson(appointment.getPerson());

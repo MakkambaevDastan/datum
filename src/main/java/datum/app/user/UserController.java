@@ -1,6 +1,9 @@
 package datum.app.user;
 
 import datum.Main;
+import datum.app.admin.mapping.PersonMapper;
+import datum.app.admin.model.Person;
+import datum.app.admin.service.PersonService;
 import datum.app.clinic.dto.ClinicDTO;
 import datum.app.clinic.mapping.ClinicMapper;
 import datum.app.clinic.model.Clinic;
@@ -20,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/USER")
 public class UserController {
-    private final UserService profileService;
+    private final PersonService personService;
     private final EmployeeService employeeService;
     private final ClinicService clinicService;
     @GetMapping("/clinic")
@@ -64,15 +67,21 @@ public class UserController {
         throw new ExceptionApp(400, Message.INVALID_ID);
     }
     @GetMapping("/employee")
-    public ResponseEntity<List<Employee>> employee(){
+    public ResponseEntity<List<Employee>> getEmployee(){
         return ResponseEntity.ok(
-                employeeService.employee()
+                employeeService.getEmployeeUser()
         );
     }
 
-    @PostMapping("/person")
-    public ResponseEntity<Object> person(@RequestBody PersonDTO personDTO){
-        return ResponseEntity.ok(profileService.person(personDTO));
+    @PutMapping("/person")
+    public ResponseEntity<Object> person(
+            @RequestBody PersonDTO personDTO
+    ){
+        long userId = Main.getUserId();
+        Person person = PersonMapper.INSTANCE.convert(personDTO);
+        return ResponseEntity.ok(
+                personService.createByUser(userId, personDTO)
+        );
     }
 
 }

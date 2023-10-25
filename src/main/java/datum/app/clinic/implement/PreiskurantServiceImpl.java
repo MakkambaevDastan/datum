@@ -1,5 +1,6 @@
 package datum.app.clinic.implement;
 
+import datum.app.clinic.model.Clinic;
 import datum.app.clinic.model.MonetaryAmount;
 import datum.app.clinic.model.Preiskurant;
 import datum.app.clinic.repositoy.ClinicRepository;
@@ -25,9 +26,8 @@ public class PreiskurantServiceImpl implements PreiskurantService {
             long clinicId,
             long employeeId
     ) {
-        var preiskurants = preiskurantRepository.findAllByClinicId(clinicId);
-        if (preiskurants.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        return preiskurants.get();
+        return preiskurantRepository.findAllByClinicId(clinicId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
     }
 
     @Override
@@ -37,9 +37,8 @@ public class PreiskurantServiceImpl implements PreiskurantService {
             long employeeId,
             long preiskurantId
     ) {
-        var preiskurant = preiskurantRepository.findById(preiskurantId);
-        if (preiskurant.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        return preiskurant.get();
+        return preiskurantRepository.findById(preiskurantId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
     }
 
     @Override
@@ -49,30 +48,30 @@ public class PreiskurantServiceImpl implements PreiskurantService {
             long employeeId,
             List<Preiskurant> preiskurants
     ) {
-        var clinic = clinicRepository.findById(clinicId);
-        if (clinic.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        clinic.get().getPreiskurants().addAll(preiskurants);
-        clinicRepository.save(clinic.get());
+        Clinic clinic = clinicRepository.findById(clinicId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
+        clinic.getPreiskurants().addAll(preiskurants);
+        clinicRepository.save(clinic);
         return preiskurants;
     }
 
     @Override
-    public Preiskurant update(
+    public MonetaryAmount update(
             HttpServletRequest request,
             long clinicId,
             long employeeId,
             long preiskurantId,
             MonetaryAmount monetaryAmount
     ) {
-        var preiskurant = preiskurantRepository.findByIdAndClinicId(preiskurantId,clinicId);
-        if (preiskurant.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        preiskurant.get().setPrice(monetaryAmount);
-        preiskurantRepository.save(preiskurant.get());
-        return preiskurant.get();
+        Preiskurant preiskurant = preiskurantRepository.findByIdAndClinicId(preiskurantId,clinicId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
+        preiskurant.setPrice(monetaryAmount);
+        preiskurantRepository.save(preiskurant);
+        return preiskurant.getPrice();
     }
 
     @Override
-    public Preiskurant update(
+    public String update(
             HttpServletRequest request,
             long clinicId,
             long employeeId,
@@ -80,9 +79,9 @@ public class PreiskurantServiceImpl implements PreiskurantService {
             String description
     ) {
         preiskurantRepository.updateDescriptionByClinicId(preiskurantId, description, clinicId);
-        var pre = preiskurantRepository.findById(preiskurantId);
-        if (pre.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        return pre.get();
+        return preiskurantRepository.findById(preiskurantId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND))
+                .getDescription();
     }
 
     @Override
