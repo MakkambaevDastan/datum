@@ -16,20 +16,22 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
                INNER JOIN employee ON users.id = employee.user_id
                INNER JOIN post ON post.id = employee.post_id
            WHERE department.id=:departmentId AND users.id=:userId AND post.code=:post
+           AND (department.deleted=false OR department.deleted IS NULL)
            """, nativeQuery = true)
     Optional<Department> getWhereIdAndUserId(Long departmentId, Long userId, String post);
-    @Query(value = """
-            SELECT department.*
-            FROM department
-                INNER JOIN clinic ON clinic.id=department.clinic_id
-            WHERE clinic.user_id=:userId AND department.clinic_id=:clinicId
-        """, nativeQuery = true)
-    Optional<List<Department>> findAllByClinicIdAndUserId(long clinicId, long userId);
+//    @Query(value = """
+//            SELECT department.*
+//            FROM department
+//                INNER JOIN clinic ON clinic.id=department.clinic_id
+//            WHERE clinic.user_id=:userId AND department.clinic_id=:clinicId
+//        """, nativeQuery = true)
+//    Optional<List<Department>> findAllByClinicIdAndUserId(long clinicId, long userId);
     @Query(value = """
             SELECT *
             FROM department
             WHERE department.id=:departmentId
                 AND department.clinic_id=:clinicId
+                AND (department.deleted=false OR department.deleted IS NULL)
         """, nativeQuery = true)
     Optional <Department> findByIdAndClinicId(long departmentId ,long clinicId);
     @Query(value = """
@@ -37,9 +39,13 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
             FROM department
             WHERE department.id=:departmentId
                 AND department.clinic_id=:clinicId
+            AND (department.deleted=false OR department.deleted IS NULL)
         """, nativeQuery = true)
     boolean existsByIdAndClinicId(long departmentId ,long clinicId);
-    @Query(value = "SELECT * FROM department WHERE clinic_id = :clinicId", nativeQuery = true)
+    @Query(value = """
+    SELECT * FROM department WHERE clinic_id = :clinicId
+    AND (department.deleted=false OR department.deleted IS NULL)
+    """, nativeQuery = true)
     Optional<List<Department>> findAllByClinicId(long clinicId);
 
 }

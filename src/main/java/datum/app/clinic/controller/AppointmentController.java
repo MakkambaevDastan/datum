@@ -4,6 +4,7 @@ import datum.Main;
 import datum.app.clinic.dto.AppointmentDTO;
 import datum.app.clinic.mapping.AppointmentMapper;
 import datum.app.clinic.model.Appointment;
+import datum.app.clinic.repositoy.TreatmentRepository;
 import datum.app.clinic.service.AppointmentService;
 import datum.app.admin.repository.PersonRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import java.util.List;
 public class AppointmentController {
     private final PersonRepository personRepository;
     private final AppointmentService appointmentService;
+    private final TreatmentRepository treatmentRepository;
     @GetMapping
     public ResponseEntity<List<Appointment>> getAppointment(
             HttpServletRequest request,
@@ -74,34 +76,38 @@ public class AppointmentController {
                         Main.parseLong(employeeId),
                         Main.parseLong(departmentId),
                         Main.parseLong(id),
-                        AppointmentMapper.INSTANCE.convert(appointmentDTO, personRepository)
-
+                        AppointmentMapper.INSTANCE.convert(
+                                appointmentDTO,
+                                personRepository,
+                                treatmentRepository,
+                                Main.parseLong(clinicId)
+                        )
                 )
         );
     }
 
-    @PutMapping("/{appointmentId}")
-    public ResponseEntity<Appointment> appointment(
-            HttpServletRequest request,
-            @PathVariable("clinicId") String clinicId,
-            @PathVariable("employeeId") String employeeId,
-            @PathVariable("departmentId") String departmentId,
-            @PathVariable("id") String id,
-            @PathVariable("appointmentId") String appointmentId,
-            @RequestBody AppointmentDTO appointmentDTO
-    ) {
-        return ResponseEntity.ok(
-                appointmentService.update(
-                        request,
-                        Main.parseLong(clinicId),
-                        Main.parseLong(employeeId),
-                        Main.parseLong(departmentId),
-                        Main.parseLong(id),
-                        Main.parseLong(appointmentId),
-                        AppointmentMapper.INSTANCE.convert(appointmentDTO, personRepository)
-                )
-        );
-    }
+//    @PutMapping("/{appointmentId}")
+//    public ResponseEntity<Appointment> appointment(
+//            HttpServletRequest request,
+//            @PathVariable("clinicId") String clinicId,
+//            @PathVariable("employeeId") String employeeId,
+//            @PathVariable("departmentId") String departmentId,
+//            @PathVariable("id") String id,
+//            @PathVariable("appointmentId") String appointmentId,
+//            @RequestBody AppointmentDTO appointmentDTO
+//    ) {
+//        return ResponseEntity.ok(
+//                appointmentService.update(
+//                        request,
+//                        Main.parseLong(clinicId),
+//                        Main.parseLong(employeeId),
+//                        Main.parseLong(departmentId),
+//                        Main.parseLong(id),
+//                        Main.parseLong(appointmentId),
+//                        appointmentDTO
+//                )
+//        );
+//    }
 
     @DeleteMapping("/{appointmentId}")
     public void deleteAppointment(

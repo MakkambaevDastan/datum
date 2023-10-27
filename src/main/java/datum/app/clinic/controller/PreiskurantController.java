@@ -67,24 +67,24 @@ public class PreiskurantController {
         );
     }
 
-    @PutMapping("/{preiskurantId}/monetaryAmount")
-    public ResponseEntity<MonetaryAmount> updatePreiskurant(
-            HttpServletRequest request,
-            @PathVariable("clinicId") String clinicId,
-            @PathVariable("employeeId") String employeeId,
-            @PathVariable("preiskurantId") String preiskurantId,
-            @RequestBody MonetaryAmount monetaryAmount
-    ) {
-        return ResponseEntity.ok(
-                preiskurantService.update(
-                        request,
-                        Main.parseLong(clinicId),
-                        Main.parseLong(employeeId),
-                        Main.parseLong(preiskurantId),
-                        monetaryAmount
-                )
-        );
-    }
+//    @PutMapping("/{preiskurantId}/monetaryAmount")
+//    public ResponseEntity<MonetaryAmount> updatePreiskurant(
+//            HttpServletRequest request,
+//            @PathVariable("clinicId") String clinicId,
+//            @PathVariable("employeeId") String employeeId,
+//            @PathVariable("preiskurantId") String preiskurantId,
+//            @RequestBody MonetaryAmount monetaryAmount
+//    ) {
+//        return ResponseEntity.ok(
+//                preiskurantService.update(
+//                        request,
+//                        Main.parseLong(clinicId),
+//                        Main.parseLong(employeeId),
+//                        Main.parseLong(preiskurantId),
+//                        monetaryAmount
+//                )
+//        );
+//    }
 
     @PutMapping("/{preiskurantId}/description")
     public ResponseEntity<String> updatePreiskurant(

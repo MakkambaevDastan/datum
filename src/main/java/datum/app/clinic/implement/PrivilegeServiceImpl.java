@@ -30,19 +30,16 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     private final PostRepository postRepository;
 
     @Override
-    public Privilege getPrivilege(
+    public boolean getPrivilege(
             HttpServletRequest request,
             long clinicId,
             long employeeId
     ) {
-        return privilegeRepository.findById(PrivilegeID.builder()
-                .clinicId(clinicId)
-                .postId(employeeId)
-                .method(request.getMethod())
-                .endpoint(
-                        request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE).toString()
-                )
-                .build()
+        return privilegeRepository.findById(
+                clinicId,
+                employeeId,
+                request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE).toString(),
+                request.getMethod()
         ).orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
     }
 
@@ -53,7 +50,7 @@ public class PrivilegeServiceImpl implements PrivilegeService {
         List<Privilege> privileges = privilegeRepository.getPrivilegeFromClinicId(clinicId)
                 .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
         List<Endpoint> endpoints = endpointRepository.findAll();
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = postRepository.findAllByCodeIsNot("OWNER");
         if (privileges.size() == posts.size() * endpoints.size()) return privileges;
         Set<Privilege> newPrivileges = new HashSet<>();
         if (privileges.size() > 0) {

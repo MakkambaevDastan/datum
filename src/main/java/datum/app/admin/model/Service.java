@@ -19,7 +19,7 @@ import java.io.Serializable;
 @Entity
 @Jacksonized
 @SQLDelete(sql = "update service set deleted=true where id=?")
-@Where(clause = "deleted = false or deleted is null")
+@Where(clause = "deleted = false or deleted is null and dent=true")
 public class Service extends Auditable<Long> implements Serializable {
     private String code;
     private String view;
@@ -28,5 +28,5 @@ public class Service extends Auditable<Long> implements Serializable {
     private String number;
     @Column(length = 512)
     private String serviceName;
-    private Boolean dental;
+    private Boolean dent;
 }

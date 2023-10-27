@@ -41,7 +41,6 @@ public class ClinicServiceImpl implements ClinicService {
     public Clinic create(Clinic clinic) {
         User user = userRepository.findById(Main.getUserId())
                 .orElseThrow(() -> new ExceptionApp(404, Message.USER_NOT_FOUND));
-//        try {
             EmployeeDTO employeeDTO = EmployeeDTO.builder().post("OWNER").build();
             Employee employee = EmployeeMapper.INSTANCE.convert(employeeDTO, postRepository);
             employee.setUser(user);
@@ -53,9 +52,6 @@ public class ClinicServiceImpl implements ClinicService {
                     .orElseThrow(
                             () -> new ExceptionApp(500, Message.INTERNAL_SERVER_ERROR)
                     );
-//        } catch (ExceptionApp e) {
-//            throw new ExceptionApp(500, Message.INTERNAL_SERVER_ERROR);
-//        }
 
     }
 

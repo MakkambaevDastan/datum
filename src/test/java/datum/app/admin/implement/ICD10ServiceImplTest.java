@@ -19,7 +19,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class ICD10ServiceImpl_UT {
+class ICD10ServiceImplTest {
     @Mock
     private ICD10Repository icd10Repository;
 

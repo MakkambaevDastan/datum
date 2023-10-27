@@ -19,5 +19,5 @@ public class ICD10DTO  implements Serializable {
             description = "ICD-10 code (K00.19) and Description")
     private String name;
     @Schema(example = "true", description = "is dental diagnosis")
-    private Boolean dental;
+    private Boolean dent;
 }

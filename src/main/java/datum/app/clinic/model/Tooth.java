@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -19,28 +21,29 @@ import java.io.Serializable;
 public class Tooth implements Serializable {
     @Schema(example = "123", description = "icd10Id")
     private Long icd10;
-    @Schema(example = "15", description = "FDI World Dental Federation notation")
-    private Integer number;
+    @Schema(implementation = ToothNumber.class, description = "FDI World Dental Federation notation")
+    @Enumerated(EnumType.STRING)
+    private ToothNumber number;
     @Schema(implementation = ToothCondition.class,
             example = "CARIES",
             description = """ 
-                CARIES("Кариес"),
-                PULPIT("Пульпит"),
-                PERIODONTITIS("Периодонтит"),
-                DEFECT("Дефект"),
-                FILLING("Пломба"),
-                CROWN("Искусственная коронка"),
-                ARTIFICIAL("Искусственный зуб"),
-                TAB("Вкладка"),
-                IMPLANT("Имплантат"),
-                ROOT("Корень зуба"),
-                MISSING("Отсутствующий зуб")
-                          """)
+                    CARIES("Кариес"),
+                    PULPIT("Пульпит"),
+                    PERIODONTITIS("Периодонтит"),
+                    DEFECT("Дефект"),
+                    FILLING("Пломба"),
+                    CROWN("Искусственная коронка"),
+                    ARTIFICIAL("Искусственный зуб"),
+                    TAB("Вкладка"),
+                    IMPLANT("Имплантат"),
+                    ROOT("Корень зуба"),
+                    MISSING("Отсутствующий зуб")
+                              """)
     @Enumerated(EnumType.STRING)
     private ToothCondition condition;
 
     @Schema(implementation = ToothMobility.class,
-            example = "I" , description = "Подвижность зубов I, II, III")
+            example = "I", description = "Подвижность зубов I, II, III")
     @Enumerated(EnumType.STRING)
     private ToothMobility mobility;
 }

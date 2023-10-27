@@ -18,7 +18,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
-class PersonServiceImpl_UT {
+class PersonServiceImplTest {
     @Mock
     private PersonRepository personRepository;
     @Mock
@@ -61,7 +61,7 @@ Clinic clinic = Clinic.builder()
     @Test
     void test_CreateByClinic() {
         Mockito.when(clinicRepository.findById(1L)).thenReturn(Optional.ofNullable(clinic));
-        Person result = personService.create(1L, person);
+        Person result = personService.createByClinic(1L, person);
         assertEquals("Dastan", result.getFirstname());
     }
 

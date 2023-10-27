@@ -1,6 +1,8 @@
 package datum.app.clinic.implement;
 
 import datum.Main;
+import datum.app.clinic.dto.AppointmentDTO;
+import datum.app.clinic.mapping.AppointmentMapper;
 import datum.app.clinic.model.Appointment;
 import datum.app.clinic.model.Employee;
 import datum.app.clinic.repositoy.AppointmentRepository;
@@ -28,9 +30,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             long departmentId,
             long id
     ) {
-        if(!employeeRepository.existsByIdAndClinicId(id,clinicId))
-            throw new ExceptionApp(404, Message.NOT_FOUND);
-        return appointmentRepository.findAllByEmployeeId(id)
+        return appointmentRepository.findAllByClinicIdAndEmployeeId(clinicId,id)
                 .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
     }
 
@@ -43,7 +43,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             long id,
             long appointmentId
     ) {
-        return appointmentRepository.findById(appointmentId)
+        return appointmentRepository.findByIdAndClinicId(appointmentId, clinicId)
                 .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
     }
 
@@ -56,32 +56,28 @@ public class AppointmentServiceImpl implements AppointmentService {
             long id,
             Appointment appointment
     ) {
-        Employee empl = employeeRepository.findByIdAndClinicId(id, clinicId)
+        Employee employee = employeeRepository.findByIdAndClinicId(id, clinicId)
                 .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
-        employeeRepository.save(empl);
-        return appointment;
+        appointment.setEmployee(employee);
+        return appointmentRepository.save(appointment);
     }
 
-    @Override
-    public Appointment update(
-            HttpServletRequest request,
-            long clinicId,
-            long employeeId,
-            long departmentId,
-            long id,
-            long appointmentId,
-            Appointment appointment
-    ) {
-        Appointment appointment1 = appointmentRepository.findByIdAndClinicId(appointmentId, clinicId)
-                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
-        appointment1.setDescription(appointment.getDescription());
-        appointment1.setVisible(appointment.getVisible());
-        appointment1.setPerson(appointment.getPerson());
-        appointment1.setStart(appointment.getStart());
-        appointment1.setMinute(appointment.getMinute());
-        appointmentRepository.save(appointment1);
-        return appointment1;
-    }
+//    @Override
+//    public Appointment update(
+//            HttpServletRequest request,
+//            long clinicId,
+//            long employeeId,
+//            long departmentId,
+//            long id,
+//            long appointmentId,
+//            AppointmentDTO appointmentDTO
+//    ) {
+//        Appointment appointment = appointmentRepository.findByIdAndClinicId(appointmentId, clinicId)
+//                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
+//        AppointmentMapper.INSTANCE.update(appointmentDTO, appointment);
+//        appointmentRepository.save(appointment);
+//        return appointment;
+//    }
 
     @Override
     public void delete(
@@ -92,8 +88,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             long id,
             long appointmentId
     ) {
-        if(!appointmentRepository.existsByIdAndClinicId(appointmentId, clinicId))
-            throw new ExceptionApp(404, Message.NOT_FOUND );
+        if (!appointmentRepository.existsByIdAndClinicId(appointmentId, clinicId))
+            throw new ExceptionApp(404, Message.NOT_FOUND);
         appointmentRepository.deleteById(appointmentId);
     }
 }

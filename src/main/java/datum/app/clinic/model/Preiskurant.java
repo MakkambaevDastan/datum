@@ -3,7 +3,6 @@ package datum.app.clinic.model;
 import datum.config.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -16,7 +15,6 @@ import org.hibernate.type.SqlTypes;
 import java.io.Serializable;
 
 @Data
-//@Builder
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,12 +23,9 @@ import java.io.Serializable;
 @SQLDelete(sql = "update preiskurant set deleted=true where id=?")
 @Where(clause = "deleted = false or deleted is null")
 public class Preiskurant  extends Auditable<Long> implements Serializable {
-
     @Column(columnDefinition = "TEXT")
     private String description;
-
     private Long service;
-
     @JdbcTypeCode(SqlTypes.JSON)
     private MonetaryAmount price;
 }

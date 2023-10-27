@@ -19,7 +19,7 @@ import java.io.Serializable;
 @Entity
 @Jacksonized
 @SQLDelete(sql = "update icd10 set deleted=true where id=?")
-@Where(clause = "deleted = false or deleted is null")
+@Where(clause = "deleted = false or deleted is null AND dent=true")
 public class ICD10  extends Auditable<Long> implements Serializable {
     private String code; //K00.11 // K00.11
     private String chapter; // I

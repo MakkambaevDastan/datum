@@ -25,13 +25,13 @@ public interface PreiskurantService {
             long employeeId,
             List<Preiskurant> preiskurants
     );
-    MonetaryAmount update(
-            HttpServletRequest request,
-            long clinicId,
-            long employeeId,
-            long preiskurantId,
-            MonetaryAmount monetaryAmount
-    );
+//    MonetaryAmount update(
+//            HttpServletRequest request,
+//            long clinicId,
+//            long employeeId,
+//            long preiskurantId,
+//            MonetaryAmount monetaryAmount
+//    );
     String update(
             HttpServletRequest request,
             long clinicId,

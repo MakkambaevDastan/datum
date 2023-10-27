@@ -11,7 +11,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @ExtendWith({SpringExtension.class})
-@Sql("classpath:init.sql")
+//@Sql("classpath:init.sql")
 public abstract class AbstractIntegrationTest {
     @Container
     public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:15-alpine");

@@ -20,19 +20,36 @@ public interface ClinicRepository extends JpaRepository<Clinic, Long> {
             FROM clinic
                INNER JOIN employee ON employee.user_id=clinic.user_id
                INNER JOIN post ON post.id=employee.post_id
-            WHERE clinic.id=:clinicId AND clinic.user_id=:userId AND post.code=:post
+            WHERE clinic.id=:clinicId
+            AND (clinic.deleted=false OR clinic.deleted IS NULL)
+            AND clinic.user_id=:userId
+            AND (post.deleted=false OR post.deleted IS NULL)
+            AND post.code=:post
+            AND (post.deleted=false OR post.deleted IS NULL)
                """, nativeQuery = true)
     Optional<Clinic> selectWhereIdAndUserId(Long clinicId, Long userId, String post);
-    @Query(value = "SELECT * FROM clinic WHERE clinic.user_id=:userId", nativeQuery = true)
+    @Query(value = """
+SELECT * FROM clinic WHERE clinic.user_id=:userId
+AND (clinic.deleted=false OR clinic.deleted IS NULL)
+""", nativeQuery = true)
     Optional<List<Clinic>> findAllByUserId(Long userId);
 
-    @Query(value = "SELECT * FROM clinic WHERE clinic.id=:clinicId AND clinic.user_id=:userId", nativeQuery = true)
+    @Query(value = """
+                   SELECT CASE WHEN count(*)>0 THEN true ELSE false END FROM clinic
+                   WHERE clinic.id=:clinicId AND clinic.user_id=:userId
+                   AND (clinic.deleted=false OR clinic.deleted IS NULL)
+                   """, nativeQuery = true)
     Optional<Clinic> countByIdAndUserId(Long clinicId, Long userId);
     @Modifying
-    @Query(value = "UPDATE clinic SET clinic.name = :name " +
-                   "WHERE clinic.id=:clinicId AND user_id=:userId", nativeQuery = true)
+    @Query(value = """
+                   UPDATE clinic SET clinic.name = :name
+                   WHERE clinic.id=:clinicId AND user_id=:userId
+                   """, nativeQuery = true)
     void updateClinic(Long clinicId, Long userId, String name);
-    @Query(value = "SELECT name FROM clinic WHERE clinic.id=:clinicId", nativeQuery = true)
+    @Query(value = """
+    SELECT name FROM clinic WHERE clinic.id=:clinicId
+    AND (clinic.deleted=false OR clinic.deleted IS NULL)
+    """, nativeQuery = true)
     Optional<String> findNameById(Long clinicId);
 
 }

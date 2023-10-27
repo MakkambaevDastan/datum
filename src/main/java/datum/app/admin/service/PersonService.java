@@ -9,8 +9,9 @@ import java.util.List;
 
 public interface PersonService {
     Person create(Person person);
-    Person createByUser(long userId, PersonDTO personDTO);
+    Person putByUser(long userId, PersonDTO personDTO);
     Person createByClinic(long clinicId, Person person);
+    Person updateByClinic(long clinicId, long personId, PersonDTO personDTO);
     Person get(long personId);
     Page<Person> getPage(
             int page,

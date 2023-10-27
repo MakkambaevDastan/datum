@@ -1,5 +1,7 @@
 package datum.app.clinic.implement;
 
+import datum.app.clinic.dto.AnamnesisDTO;
+import datum.app.clinic.mapping.AnamnesisMapper;
 import datum.app.clinic.model.Anamnesis;
 import datum.app.clinic.model.Employee;
 import datum.app.clinic.repositoy.AnamnesisRepository;
@@ -27,9 +29,7 @@ public class AnamnesisServiceImpl implements AnamnesisService {
             long departmentId,
             long id
     ) {
-        if(!employeeRepository.existsByIdAndClinicId(id, clinicId))
-            throw new ExceptionApp(404, Message.NOT_FOUND);
-        return anamnesisRepository.findAllByEmployeeId(id)
+        return anamnesisRepository.findAllByClinicIdAndEmployeeId(clinicId,id)
                 .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
     }
 
@@ -55,32 +55,27 @@ public class AnamnesisServiceImpl implements AnamnesisService {
             long id,
             Anamnesis anamnesis
     ) {
-        Employee employee = employeeRepository.findByIdAndClinicId(id,clinicId)
+        Employee employee = employeeRepository.findByIdAndClinicId(id, clinicId)
                 .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
-        employee.addAnamnesis(anamnesis);
-        employeeRepository.save(employee);
-        return anamnesis;
+        anamnesis.setEmployee(employee);
+        return anamnesisRepository.save(anamnesis);
     }
 
-    @Override
-    public Anamnesis update(
-            HttpServletRequest request,
-            long clinicId,
-            long employeeId,
-            long departmentId,
-            long id,
-            long anamnesisId,
-            Anamnesis anamnesis
-    ) {
-        var anamnesis1 = anamnesisRepository.findByIdAndClinicId(anamnesisId, clinicId)
-                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
-        anamnesis1.setClinicalDiagnosis(anamnesis.getClinicalDiagnosis());
-        anamnesis1.setTooth(anamnesis.getTooth());
-        anamnesis1.setAnamnesisDetails(anamnesis.getAnamnesisDetails());
-        anamnesisRepository.save(anamnesis1);
-
-        return anamnesis1;
-    }
+//    @Override
+//    public Anamnesis update(
+//            HttpServletRequest request,
+//            long clinicId,
+//            long employeeId,
+//            long departmentId,
+//            long id,
+//            long anamnesisId,
+//            AnamnesisDTO anamnesisDTO
+//    ) {
+//        Anamnesis anamnesis = anamnesisRepository.findByIdAndClinicIdAndEmployeeId(anamnesisId, clinicId, employeeId)
+//                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
+//        AnamnesisMapper.INSTANCE.update(anamnesisDTO, anamnesis);
+//        return anamnesisRepository.save(anamnesis);
+//    }
 
     @Override
     public void delete(
@@ -91,7 +86,7 @@ public class AnamnesisServiceImpl implements AnamnesisService {
             long id,
             long anamnesisId
     ) {
-        if(!anamnesisRepository.existsByIdAndClinicId(anamnesisId, clinicId))
+        if (!anamnesisRepository.existsByIdAndClinicId(anamnesisId, clinicId))
             throw new ExceptionApp(404, Message.NOT_FOUND);
         anamnesisRepository.deleteById(anamnesisId);
     }

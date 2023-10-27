@@ -65,15 +65,20 @@ public class ClinicController {
                 personService.createByClinic(Main.parseLong(clinicId), person)
         );
     }
-    @PutMapping(value = "/person")
+    @PutMapping(value = "/person/{personId}")
     public ResponseEntity<Person> updatePerson(
             HttpServletRequest request,
             @PathVariable("clinicId") String clinicId,
             @PathVariable("employeeId") String employeeId,
-            @RequestBody Person person
+            @PathVariable("personId") String personId,
+            @RequestBody PersonDTO personDTO
     ) {
         return ResponseEntity.ok(
-                personService.createByClinic(Main.parseLong(clinicId), person)
+                personService.updateByClinic(
+                        Main.parseLong(clinicId),
+                        Main.parseLong(personId),
+                        personDTO
+                )
         );
     }
     //=================================================================================================

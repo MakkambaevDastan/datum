@@ -14,7 +14,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class EndpointServiceImpl_UT {
+class EndpointServiceImplTest {
     @Mock
     private EndpointRepository endpointRepository;
     @InjectMocks
@@ -42,9 +42,8 @@ class EndpointServiceImpl_UT {
     @Test
     void test_Create() {
         Mockito.when(endpointRepository.saveAll(endpoints)).thenReturn(endpoints);
-        List<Endpoint> result = endpointService.create(endpoints);
-        assertEquals(2, result.size());
-        assertTrue(result.get(0).getEndpoint().contains("/CLINIC/{clinicId}/employee/{employeeId}"));
+        Endpoint result = endpointService.create(endpoint1);
+        assertTrue(result.getEndpoint().contains("/CLINIC/{clinicId}/employee/{employeeId}"));
     }
     @Test
     void test_Update() {

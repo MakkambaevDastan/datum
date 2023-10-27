@@ -42,10 +42,7 @@ public class ApplicationConfig {
 
     private final UserRepository repository;
     private final PrivilegeService privilegeService;
-
-
-
-    @Bean
+        @Bean
     public AuditorAware<Long> auditorProvider() {
         return new SpringSecurityAuditorAware();
     }

@@ -29,5 +29,5 @@ public class ServiceDTO  implements Serializable {
     @Schema(example = "")
     private String kg;
     @Schema(example = "true", description = "is dental service")
-    private Boolean dental;
+    private Boolean dent;
 }

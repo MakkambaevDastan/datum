@@ -78,9 +78,8 @@ public class UserController {
             @RequestBody PersonDTO personDTO
     ){
         long userId = Main.getUserId();
-        Person person = PersonMapper.INSTANCE.convert(personDTO);
         return ResponseEntity.ok(
-                personService.createByUser(userId, personDTO)
+                personService.putByUser(userId, personDTO)
         );
     }
 

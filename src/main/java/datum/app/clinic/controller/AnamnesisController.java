@@ -2,6 +2,7 @@ package datum.app.clinic.controller;
 
 import datum.Main;
 import datum.app.admin.repository.ICD10Repository;
+import datum.app.admin.repository.PersonRepository;
 import datum.app.clinic.dto.AnamnesisDTO;
 import datum.app.clinic.mapping.AnamnesisMapper;
 import datum.app.clinic.model.Anamnesis;
@@ -19,6 +20,7 @@ import java.util.List;
 public class AnamnesisController {
     private final AnamnesisService anamnesisService;
     private final ICD10Repository icd10Repository;
+    private final PersonRepository personRepository;
 
     @GetMapping
     public ResponseEntity<List<Anamnesis>> getAnamnesis(
@@ -76,33 +78,33 @@ public class AnamnesisController {
                         Main.parseLong(employeeId),
                         Main.parseLong(departmentId),
                         Main.parseLong(id),
-                        AnamnesisMapper.INSTANCE.convert(anamnesisDTO, icd10Repository)
+                        AnamnesisMapper.INSTANCE.convert(anamnesisDTO, icd10Repository, personRepository)
                 )
         );
     }
 
-    @PutMapping("/{anamnesisId}")
-    public ResponseEntity<Anamnesis> updateAnamnesis(
-            HttpServletRequest request,
-            @PathVariable("clinicId") String clinicId,
-            @PathVariable("employeeId") String employeeId,
-            @PathVariable("departmentId") String departmentId,
-            @PathVariable("id") String id,
-            @PathVariable("anamnesisId") String anamnesisId,
-            @RequestBody AnamnesisDTO anamnesisDTO
-    ) {
-        return ResponseEntity.ok(
-                anamnesisService.update(
-                        request,
-                        Main.parseLong(clinicId),
-                        Main.parseLong(employeeId),
-                        Main.parseLong(departmentId),
-                        Main.parseLong(id),
-                        Main.parseLong(anamnesisId),
-                        AnamnesisMapper.INSTANCE.convert(anamnesisDTO, icd10Repository)
-                )
-        );
-    }
+//    @PutMapping("/{anamnesisId}")
+//    public ResponseEntity<Anamnesis> updateAnamnesis(
+//            HttpServletRequest request,
+//            @PathVariable("clinicId") String clinicId,
+//            @PathVariable("employeeId") String employeeId,
+//            @PathVariable("departmentId") String departmentId,
+//            @PathVariable("id") String id,
+//            @PathVariable("anamnesisId") String anamnesisId,
+//            @RequestBody AnamnesisDTO anamnesisDTO
+//    ) {
+//        return ResponseEntity.ok(
+//                anamnesisService.update(
+//                        request,
+//                        Main.parseLong(clinicId),
+//                        Main.parseLong(employeeId),
+//                        Main.parseLong(departmentId),
+//                        Main.parseLong(id),
+//                        Main.parseLong(anamnesisId),
+//                        anamnesisDTO
+//                )
+//        );
+//    }
 
     @DeleteMapping("/{anamnesisId}")
     public void deleteAnamnesis(

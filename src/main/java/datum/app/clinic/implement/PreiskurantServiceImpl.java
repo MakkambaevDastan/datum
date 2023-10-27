@@ -55,20 +55,20 @@ public class PreiskurantServiceImpl implements PreiskurantService {
         return preiskurants;
     }
 
-    @Override
-    public MonetaryAmount update(
-            HttpServletRequest request,
-            long clinicId,
-            long employeeId,
-            long preiskurantId,
-            MonetaryAmount monetaryAmount
-    ) {
-        Preiskurant preiskurant = preiskurantRepository.findByIdAndClinicId(preiskurantId,clinicId)
-                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
-        preiskurant.setPrice(monetaryAmount);
-        preiskurantRepository.save(preiskurant);
-        return preiskurant.getPrice();
-    }
+//    @Override
+//    public MonetaryAmount update(
+//            HttpServletRequest request,
+//            long clinicId,
+//            long employeeId,
+//            long preiskurantId,
+//            MonetaryAmount monetaryAmount
+//    ) {
+//        Preiskurant preiskurant = preiskurantRepository.findByIdAndClinicId(preiskurantId,clinicId)
+//                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
+//        preiskurant.setPrice(monetaryAmount);
+//        preiskurantRepository.save(preiskurant);
+//        return preiskurant.getPrice();
+//    }
 
     @Override
     public String update(

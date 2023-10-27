@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class ClinicServiceImpl_UT {
+class ClinicServiceImplTest {
     @Mock
     private  ClinicRepository clinicRepository;
     @Mock

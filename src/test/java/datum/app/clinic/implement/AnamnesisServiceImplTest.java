@@ -10,7 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class AnamnesisServiceImpl_UT {
+class AnamnesisServiceImplTest {
     @Mock
     private AnamnesisRepository anamnesisRepository;
     @Mock

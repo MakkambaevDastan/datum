@@ -1,9 +1,8 @@
 package datum.app.clinic.model;
 
-import datum.app.admin.model.Post;
-import datum.authenticate.User;
 import datum.config.audit.Auditable;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,17 +21,13 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Entity
 @Jacksonized
-@SQLDelete(sql = "update employee set deleted=true where id=?")
+@SQLDelete(sql = "update treatment set deleted=true where id=?")
 @Where(clause = "deleted = false or deleted is null")
-public class Employee  extends Auditable<Long> implements Serializable {
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Post post;
-
+public class Treatment extends Auditable<Long> implements Serializable {
+    private String description;
     @JdbcTypeCode(SqlTypes.JSON)
-    private Schedule schedule;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
+    private Tooth tooth;
+    @ManyToOne
+    private Preiskurant preiskurant;
+    private MonetaryAmount discount;
 }

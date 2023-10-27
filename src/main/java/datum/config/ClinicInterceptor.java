@@ -23,12 +23,12 @@ public class ClinicInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         var map = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        Privilege privilege = privilegeService.getPrivilege(
+        boolean privilege = privilegeService.getPrivilege(
                 request,
                 Main.parseLong(map.get("clinicId")),
                 Main.parseLong(map.get("employeeId"))
         );
-        if(privilege.getBool())
+        if(privilege)
             return true;
         else
             throw new ExceptionApp(403, Message.FORBIDDEN);

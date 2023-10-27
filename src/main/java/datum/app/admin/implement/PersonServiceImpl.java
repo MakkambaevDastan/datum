@@ -5,6 +5,7 @@ import datum.app.admin.mapping.PersonMapper;
 import datum.app.admin.model.Person;
 import datum.app.admin.repository.PersonRepository;
 import datum.app.admin.service.PersonService;
+import datum.app.clinic.model.Clinic;
 import datum.app.clinic.repositoy.ClinicRepository;
 import datum.authenticate.User;
 import datum.authenticate.UserRepository;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -42,24 +44,29 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Person createByUser(long userId, PersonDTO personDTO) {
+    public Person putByUser(long userId, PersonDTO personDTO) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
-        if (user.getPerson() != null) PersonMapper.INSTANCE.update(personDTO, user.getPerson());
-        else user.setPerson(PersonMapper.INSTANCE.convert(personDTO));
-//        phoneRepository.deleteAll(user.getPerson().getPhone());
-//        user.getPerson().setPhone(PhoneMapper.INSTANCE.convert(personDTO.getPhone()));
+        if (user.getPerson() == null) user.setPerson(PersonMapper.INSTANCE.convert(personDTO));
+        else PersonMapper.INSTANCE.update(personDTO, user.getPerson());
         userRepository.save(user);
         return user.getPerson();
     }
 
     @Override
     public Person createByClinic(long clinicId, Person person) {
-        var clinic = clinicRepository.findById(clinicId)
+        Clinic clinic = clinicRepository.findById(clinicId)
                 .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
         clinic.addPerson(person);
         clinicRepository.save(clinic);
         return person;
+    }
+    @Override
+    public Person updateByClinic(long clinicId, long personId, PersonDTO personDTO) {
+        Person person = personRepository.findByIdAndClinicId(personId,clinicId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
+        PersonMapper.INSTANCE.update(personDTO, person);
+        return createByClinic(clinicId, person);
     }
 
     @Override
@@ -78,9 +85,9 @@ public class PersonServiceImpl implements PersonService {
             long clinicId,
             long employeeId
     ) {
-        var person = personRepository.findAll(clinicId);
-        if (person.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        return person.get();
+        return  personRepository.findAllByClinic(clinicId)
+                .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
+
     }
 
 
@@ -92,9 +99,7 @@ public class PersonServiceImpl implements PersonService {
             int page,
             int size
     ) {
-        var person = personRepository.findAll(clinicId, page, size);
-        if (person.isEmpty()) throw new ExceptionApp(404, Message.NOT_FOUND);
-        return person.get();
+        return personRepository.getPageByClinic(clinicId, page, size);
     }
 
 

@@ -27,5 +27,7 @@ public class AnamnesisDTO implements Serializable {
     @Schema
     private List<AnamnesisDetails> anamnesisDetails = new ArrayList<>();
     @Schema(example = "121223", description = "personId")
-    private Long personId;
+    private Long person;
+//    @Schema
+//    private List<TreatmentDTO> treatments = new ArrayList<>();
 }

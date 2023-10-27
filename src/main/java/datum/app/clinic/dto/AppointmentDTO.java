@@ -1,7 +1,7 @@
 package datum.app.clinic.dto;
 
-import datum.app.admin.model.Person;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +10,8 @@ import lombok.extern.jackson.Jacksonized;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -18,12 +20,21 @@ import java.time.Instant;
 @Jacksonized
 @Schema
 public class AppointmentDTO  implements Serializable {
-    @Schema(example = "Первичный, консультация", description = "Описание")
+
+    @Schema(example = "Первичный, консультация")
     private String description;
+
     @Schema(example = "2023-10-24T10:00:00.000Z")
+    @NotNull
     private Instant start;
+
+    @NotNull
     @Schema(example = "60")
     private Integer minute;
-    @Schema(example = "12")
-    private Person person;
+
+    @Schema
+    private Long person;
+
+    @Schema
+    private List<Long> treatments = new ArrayList<>();
 }

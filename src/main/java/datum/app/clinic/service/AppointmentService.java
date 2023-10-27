@@ -1,5 +1,6 @@
 package datum.app.clinic.service;
 
+import datum.app.clinic.dto.AppointmentDTO;
 import datum.app.clinic.model.Appointment;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -28,17 +29,17 @@ public interface AppointmentService {
             long employeeId,
             long departmentId,
             long id,
-            Appointment appointments
-    );
-    Appointment update(
-            HttpServletRequest request,
-            long clinicId,
-            long employeeId,
-            long departmentId,
-            long id,
-            long appointmentId,
             Appointment appointment
     );
+//    Appointment update(
+//            HttpServletRequest request,
+//            long clinicId,
+//            long employeeId,
+//            long departmentId,
+//            long id,
+//            long appointmentId,
+//            AppointmentDTO appointmentDTO
+//    );
     void delete(
             HttpServletRequest request,
             long clinicId,

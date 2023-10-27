@@ -30,15 +30,15 @@ public interface AnamnesisService {
             long id,
             Anamnesis anamnesis
     );
-    Anamnesis update(
-            HttpServletRequest request,
-            long clinicId,
-            long employeeId,
-            long departmentId,
-            long id,
-            long anamnesisId,
-            Anamnesis anamnesis
-    );
+//    Anamnesis update(
+//            HttpServletRequest request,
+//            long clinicId,
+//            long employeeId,
+//            long departmentId,
+//            long id,
+//            long anamnesisId,
+//            AnamnesisDTO anamnesisDTO
+//    );
     void delete(
             HttpServletRequest request,
             long clinicId,
