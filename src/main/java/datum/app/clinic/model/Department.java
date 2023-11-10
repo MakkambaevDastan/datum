@@ -1,12 +1,9 @@
 package datum.app.clinic.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import datum.app.admin.model.Phone;
 import datum.config.audit.Auditable;
-import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -21,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-//@Builder
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,9 +28,8 @@ import java.util.List;
 public class Department  extends Auditable<Long> implements Serializable {
 
     private String name;
-    private String address;
     @JdbcTypeCode(SqlTypes.JSON)
-    private List<Phone> phone = new ArrayList<>();
+    private Address address;
 
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name="departmentId")

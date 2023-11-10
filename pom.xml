@@ -10,14 +10,17 @@
     </parent>
     <groupId>datum</groupId>
     <artifactId>datum</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <name>datum</name>
     <description>datum</description>
     <properties>
         <java.version>17</java.version>
-
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
-            <testcontainers.version>1.19.1</testcontainers.version>
+        <testcontainers.version>1.19.1</testcontainers.version>
+        <jib.version>3.4.0</jib.version>
+        <app.image.name>datum</app.image.name>
+        <app.image.tag/>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
     </properties>
     <dependencies>
         <dependency>
@@ -150,6 +153,19 @@
             <version>5.2.5</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.liquibase/liquibase-core -->
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>4.24.0</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.maven.plugins</groupId>-->
+<!--            <artifactId>maven-surefire-plugin</artifactId>-->
+<!--            <version>3.2.2</version>-->
+<!--        </dependency>-->
+
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-testcontainers</artifactId>
@@ -175,25 +191,6 @@
             <version>1.19.1</version>
             <scope>test</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.openapitools/openapi-generator-maven-plugin -->
-<!--        <dependency>-->
-<!--            <groupId>org.openapitools</groupId>-->
-<!--            <artifactId>openapi-generator-maven-plugin</artifactId>-->
-<!--            <version>7.0.1</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-
-        <!--        <dependency>-->
-<!--            <groupId>io.springfox</groupId>-->
-<!--            <artifactId>springfox-boot-starter</artifactId>-->
-<!--            <version>3.0.0</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>io.springfox</groupId>-->
-<!--            <artifactId>springfox-swagger-ui</artifactId>-->
-<!--            <version>3.0.0</version>-->
-<!--        </dependency>-->
-
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -209,6 +206,87 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <skipTests>false</skipTests>
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <executable>java</executable>
+                    <arguments>
+                        <argument>-classpath</argument>
+                        <classpath/>
+                        <argument>com.liquibase.Application</argument>
+                    </arguments>
+
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>4.24.0</version>
+                <configuration>
+                    <propertyFileWillOverride>true</propertyFileWillOverride>
+                    <propertyFile>src/main/resources/liquibase.yml</propertyFile>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>4.24.0</version>
+                <configuration>
+<!--                    <changeLogFile>db.changelog-master.yml</changeLogFile>-->
+<!--                    <outputChangeLogFile>/db/changelog/changelog-output.yml</outputChangeLogFile>-->
+                    <diffChangeLogFile>
+                        ${project.basedir}/src/main/resources/db/changelog/changes/${maven.build.timestamp}_changelog.yml
+                    </diffChangeLogFile>
+                    <propertyFile>src/main/resources/liquibase.yml</propertyFile>
+                    <verbose>true</verbose>
+                    <logging>debug</logging>
+                </configuration>
+                <dependencies>
+<!--                    <dependency>-->
+<!--                        <groupId>org.postgresql</groupId>-->
+<!--                        <artifactId>postgresql</artifactId>-->
+<!--                        <version>42.6.0</version>-->
+<!--                    </dependency>-->
+<!--                    <dependency>-->
+<!--                        <groupId>org.liquibase</groupId>-->
+<!--                        <artifactId>liquibase-core</artifactId>-->
+<!--                        <version>4.24.0</version>-->
+<!--                    </dependency>-->
+                    <dependency>
+                        <groupId>org.liquibase.ext</groupId>
+                        <artifactId>liquibase-hibernate6</artifactId>
+                        <version>4.24.0</version>
+                    </dependency>
+<!--                    <dependency>-->
+<!--                        <groupId>org.springframework.boot</groupId>-->
+<!--                        <artifactId>spring-boot-starter-data-jpa</artifactId>-->
+<!--                        <version>3.1.4</version>-->
+<!--                    </dependency>-->
+                    <dependency>
+                        <groupId>jakarta.validation</groupId>
+                        <artifactId>jakarta.validation-api</artifactId>
+                        <version>3.0.2</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.javassist</groupId>
+                        <artifactId>javassist</artifactId>
+                        <version>3.24.0-GA</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
@@ -220,6 +298,7 @@
                     </excludes>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -247,24 +326,24 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>pre-integration-test</id>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>post-integration-test</id>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>pre-integration-test</id>-->
+<!--                        <goals>-->
+<!--                            <goal>start</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>post-integration-test</id>-->
+<!--                        <goals>-->
+<!--                            <goal>stop</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-maven-plugin</artifactId>
@@ -278,60 +357,138 @@
                     </execution>
                 </executions>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>io.openapitools.swagger</groupId>-->
-<!--                <artifactId>swagger-maven-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <resourcePackages>-->
-<!--                        <resourcePackage>io.openapitools.swagger.example</resourcePackage>-->
-<!--                        <resourcePackage>io.openapitools.swagger.example.alternate</resourcePackage>-->
-<!--                    </resourcePackages>-->
-<!--                    <outputDirectory>${basedir}/target/</outputDirectory>-->
-<!--                    <outputFilename>swagger</outputFilename>-->
-<!--                    <outputFormats>JSON,YAML</outputFormats>-->
-<!--                    <prettyPrint>true</prettyPrint>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>generate</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-<!--            <plugin>-->
-<!--                <groupId>org.openapitools</groupId>-->
-<!--                <artifactId>openapi-generator-maven-plugin</artifactId>-->
-<!--                <version>7.0.1</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>generate</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <inputSpec>${project.basedir}src/main/java/datum/SOP.yml</inputSpec>-->
-<!--                            <generatorName>java</generatorName>-->
-<!--                            <generateApiDocumentation>false</generateApiDocumentation>-->
-<!--                            <generateApiTests>false</generateApiTests>-->
-<!--                            <generateModelDocumentation>false</generateModelDocumentation>-->
-<!--                            <generateModelTests>false</generateModelTests>-->
-<!--                            <generateApiTests>false</generateApiTests>-->
-<!--                            <generateSupportingFiles>false</generateSupportingFiles>-->
-<!--                            <library>resttemplate</library>-->
-<!--                            <modelPackage>src/main/java/datum</modelPackage>-->
-<!--                            <configOptions>-->
-<!--                                <interfaceOnly>true</interfaceOnly>-->
-<!--                                <useJakartaEe>true</useJakartaEe>-->
-<!--                                <sourceFolder>src/main/java/datum</sourceFolder>-->
-<!--                                <generateApis>false</generateApis>-->
-<!--                                <useSpringBoot3>true</useSpringBoot3>-->
-<!--                            </configOptions>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-
         </plugins>
     </build>
 
+    <profiles>
+        <!-- ./mvnw clean install jib:dockerBuild -Djib.to.image=image-name:version -->
+        <profile>
+            <id>bundle</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                        <version>${jib.version}</version>
+                        <configuration>
+                            <from>
+                                <image>gcr.io/distroless/java17-debian11</image>
+                            </from>
+                            <container>
+                                <environment>
+                                    <application.title>${project.name}</application.title>
+                                    <application.version>${project.version}</application.version>
+                                </environment>
+                                <ports>
+                                    <port>8080</port>
+                                </ports>
+                                <format>OCI</format>
+                            </container>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- ./mvnw clean install -P bundle -P build-and-push -Dapp.image.tag=2.3 -->
+        <profile>
+            <id>build-and-push</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                        <version>${jib.version}</version>
+                        <configuration>
+                            <from>
+                                <image>gcr.io/distroless/java17-debian11</image>
+                            </from>
+                            <container>
+                                <ports>
+                                    <port>8080</port>
+                                </ports>
+                                <format>OCI</format>
+                            </container>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>push-image-with-custom-tag</id>
+                                <phase>package</phase>
+                                <configuration>
+                                    <to>
+                                        <image>docker.io/makkambaevdastan/${app.image.name}:${app.image.tag}</image>
+                                    </to>
+                                </configuration>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>push-image-with-latest-tag</id>
+                                <phase>package</phase>
+                                <configuration>
+                                    <to>
+                                        <image>docker.io/makkambaevdastan/${app.image.name}:latest</image>
+                                    </to>
+                                </configuration>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- ./mvn clean install -P build-local -->
+        <profile>
+            <id>build-local</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                        <version>${jib.version}</version>
+                        <configuration>
+                            <from>
+                                <image>gcr.io/distroless/java17-debian11</image>
+                            </from>
+                            <container>
+                                <ports>
+                                    <port>8080</port>
+                                </ports>
+                                <format>OCI</format>
+                            </container>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>push-image-with-latest-tag</id>
+                                <phase>package</phase>
+                                <configuration>
+                                    <to>
+                                        <image>datum</image>
+                                    </to>
+                                </configuration>
+                                <goals>
+                                    <goal>dockerBuild</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+    </profiles>
 </project>

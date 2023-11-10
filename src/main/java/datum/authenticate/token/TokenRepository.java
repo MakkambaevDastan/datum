@@ -15,6 +15,6 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
     Optional<Token> findByToken(String token);
 //    @Query("SELECT t FROM Token t WHERE t.token = :token")
 //    Optional<Token> findByToken(String token);
-    boolean existsTokenByTokenAndExpiredAndRevoked(String token, boolean expired, boolean revoked);
+//    boolean existsTokenByTokenAndExpiredAndRevoked(String token, boolean expired, boolean revoked);
 
 }

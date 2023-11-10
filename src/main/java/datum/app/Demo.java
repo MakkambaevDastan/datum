@@ -1,43 +1,44 @@
-//package datum.app;
+package datum.app;
+
+
+import datum.config.exception.Message;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.util.UrlPathHelper;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/TEST")
+@RequiredArgsConstructor
+public class Demo {
+//    private final PersonRepository personRepository;
+
+    @GetMapping
+    public ResponseEntity<Object> get(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("getMethod", request.getMethod());
+//        map.put("getPathInfo", request.getPathInfo());
+//        map.put("getServletPath", request.getServletPath());
+//        map.put("getContextPath", request.getContextPath());
+//        map.put("getRequestURI", request.getRequestURI());
+//        map.put("getRequestURL", request.getRequestURL());
+//        map.put("getPathTranslated", request.getPathTranslated());
 //
-//
-//import jakarta.servlet.ServletException;
-//import jakarta.servlet.http.HttpServletRequest;
-//import jakarta.servlet.http.HttpServletResponse;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.web.bind.annotation.*;
-//import org.springframework.web.servlet.HandlerMapping;
-//import org.springframework.web.util.UrlPathHelper;
-//
-//import java.io.IOException;
-//import java.util.HashMap;
-//import java.util.Map;
-//
-////@RestController
-////@RequestMapping("/demo")
-////@RequiredArgsConstructor
-//public class Demo {
-////    private final PersonRepository personRepository;
-//
-//    @GetMapping
-//    public ResponseEntity<Object> get(
-//            HttpServletRequest request,
-//            HttpServletResponse response
-//    ) {
-////        Map<String, Object> map = new HashMap<>();
-////        map.put("getMethod", request.getMethod());
-////        map.put("getPathInfo", request.getPathInfo());
-////        map.put("getServletPath", request.getServletPath());
-////        map.put("getContextPath", request.getContextPath());
-////        map.put("getRequestURI", request.getRequestURI());
-////        map.put("getRequestURL", request.getRequestURL());
-////        map.put("getPathTranslated", request.getPathTranslated());
-////
-////        return ResponseEntity.ok(map);
-//        return ResponseEntity.ok("Hello, Get!");
-//    }
+//        return ResponseEntity.ok(map);
+        return ResponseEntity.ok(Map.of(1, "Hello, Get!"));
+    }
 //
 //    @PostMapping
 //    public ResponseEntity<Object> post(
@@ -111,5 +112,5 @@
 //    ) {
 //        return ResponseEntity.ok("Hello, Patch!");
 //    }
-//}
-//
+}
+

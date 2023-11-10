@@ -40,8 +40,8 @@ public class SecurityConfiguration {
     private final CorsConfigurationSource corsConfigurationSource;
     private final String[] WHITE_LIST_URL = {
             "/AUTHENTICATE/**",
-            "/test",
-            "/test/**",
+            "/TEST",
+            "/TEST/**",
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
@@ -56,8 +56,9 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-//                .cors(cors->corsConfigurationSource())
-                .cors(cors->cors.configurationSource(corsConfigurationSource))
+//                .cors(cors->cors.configurationSource(corsConfigurationSource))
+//                .cors(Customizer.withDefaults())
+                .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(WHITE_LIST_URL)
@@ -73,7 +74,7 @@ public class SecurityConfiguration {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(JwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout ->
-                        logout.logoutUrl("/authenticate/logout")
+                        logout.logoutUrl("/AUTHENTICATE/logout")
                                 .addLogoutHandler(logoutHandler)
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
                 )

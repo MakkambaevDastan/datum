@@ -38,6 +38,13 @@ public interface EmployeeService {
             long departmentId,
             List<Employee> employees
     );
+    List<Employee> createByOwner(
+            HttpServletRequest request,
+            long clinicId,
+            long employeeId,
+            long departmentId,
+            List<Employee> employees
+    );
     Post update(
             HttpServletRequest request,
             long clinicId,

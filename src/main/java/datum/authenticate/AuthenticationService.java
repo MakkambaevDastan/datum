@@ -85,15 +85,15 @@ public class AuthenticationService {
             HttpServletResponse response
     ) throws IOException {
         final String[] header = headerDecode64(request);
-        if (header.length != 3)
+        if (header.length != 2)
             throw new ExceptionApp(400, "Данные не полны");
-        Integer code = Main.parseInt(header[2]);
+        Integer code = Main.parseInt(header[1]);
         final User user = userRepository.findByEmailIgnoreCase(header[0])
                 .orElseThrow(() -> new ExceptionApp(404, "Пользователь не найден"));
         if (!user.getCode().equals(code))
             throw new ExceptionApp(400, "Неправильный код");
-        if (!passwordEncoder.matches(header[1], user.getPassword()))
-            throw new ExceptionApp(400, "Неправильный пароль");
+//        if (!passwordEncoder.matches(header[1], user.getPassword()))
+//            throw new ExceptionApp(400, "Неправильный пароль");
         user.setEnabled(true);
         user.setLocked(false);
         user.setCode(null);

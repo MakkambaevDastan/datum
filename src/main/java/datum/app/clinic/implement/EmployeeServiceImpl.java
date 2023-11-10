@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import datum.Main;
 
@@ -31,11 +32,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final AuthenticationService authenticationService;
     private final DepartmentRepository departmentRepository;
     private final PostRepository postRepository;
+
     @Override
     public List<Employee> getEmployeeUser() {
         return employeeRepository.findAllByUserId(Main.getUserId())
                 .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
     }
+
     @Override
     public List<Employee> get(
             HttpServletRequest request,
@@ -60,6 +63,21 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public List<Employee> createByOwner(
+            HttpServletRequest request,
+            long clinicId,
+            long employeeId,
+            long departmentId,
+            List<Employee> employees
+    ) {
+        Department department = departmentRepository.findByIdAndOwnerId(
+                departmentId,
+                Main.getUserId()
+        ).orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
+       return create(department, employees);
+    }
+
+    @Override
     public List<Employee> create(
             HttpServletRequest request,
             long clinicId,
@@ -67,34 +85,31 @@ public class EmployeeServiceImpl implements EmployeeService {
             long departmentId,
             List<Employee> employees
     ) {
-        Department department = departmentRepository.getWhereIdAndUserId(
+        Department department = departmentRepository.findByIdAndEmployeeId(
                 departmentId,
-                Main.getUserId(),
-                "OWNER"
+                employeeId
         ).orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user;
+        return create(department, employees);
+    }
+
+    private List<Employee> create(Department department, List<Employee> employees) {
         for (Employee employee : employees) {
+            String email ="";
             if (!Objects.isNull(employee.getUser()) &&
-                !userRepository.existsByEmailIgnoreCase(
-                        email = employee.getUser().getEmail().trim().toLowerCase()
-                )
+                    !userRepository.existsByEmailIgnoreCase(
+                            email = employee.getUser().getEmail().trim().toLowerCase()
+                    )
             ) authenticationService.register(employee.getUser());
-            user = userRepository.findByEmailIgnoreCase(email)
-                    .orElseThrow(() ->
-                            new ExceptionApp(500, Message.INTERNAL_SERVER_ERROR)
-                    );
-            employee.setUser(user);
+            if(!email.isBlank()) {
+                Optional<User> user = userRepository.findByEmailIgnoreCase(email);
+                if (user.isPresent()) employee.setUser(user.get());
+            }
             employeeRepository.save(employee);
-            if (Objects.isNull(department.getEmployees()))
-                department.setEmployees(List.of(employee));
-            else
-                department.getEmployees().add(employee);
+            department.getEmployees().add(employee);
         }
         departmentRepository.save(department);
         return department.getEmployees();
     }
-
     @Override
     public Post update(
             HttpServletRequest request,
