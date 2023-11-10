@@ -66,9 +66,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .orElseThrow(() -> new ExceptionApp(404, Message.NOT_FOUND));
         dep.setName(department.getName());
         dep.setAddress(department.getAddress());
-        dep.setPhone(department.getPhone());
-        departmentRepository.save(dep);
-        return dep;
+        return departmentRepository.save(dep);
     }
 
     @Override

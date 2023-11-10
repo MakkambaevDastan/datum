@@ -74,6 +74,24 @@ public class EmployeeController {
                 )
         );
     }
+    @PostMapping("/owner")
+    public ResponseEntity<List<Employee>> createEmployeeByOwner(
+            HttpServletRequest request,
+            @PathVariable("clinicId") String clinicId,
+            @PathVariable("employeeId") String employeeId,
+            @PathVariable("departmentId") String departmentId,
+            @RequestBody List<EmployeeDTO> employeeDTOs
+    ) {
+        return ResponseEntity.ok(
+                employeeService.createByOwner(
+                        request,
+                        Main.parseLong(clinicId),
+                        Main.parseLong(employeeId),
+                        Main.parseLong(departmentId),
+                        EmployeeMapper.INSTANCE.convert(employeeDTOs, postRepository)
+                )
+        );
+    }
 
     @PutMapping("/{id}/post/{postId}")
     public ResponseEntity<Post> updateEmployee(

@@ -1,0 +1,1003 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1699286738962-1
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  defaultValueBoolean: false
+                  name: deleted
+                  type: BOOLEAN
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: creation_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: employee_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: anamnesis_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: person_id
+                  type: BIGINT
+              - column:
+                  name: anamnesis_details
+                  type: JSONB
+              - column:
+                  name: tooth
+                  type: JSONB
+            tableName: anamnesis
+  - changeSet:
+      id: 1699286738962-2
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  defaultValueBoolean: false
+                  name: deleted
+                  type: BOOLEAN
+              - column:
+                  name: minute
+                  type: INTEGER
+              - column:
+                  name: visible
+                  type: BOOLEAN
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: creation_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: employee_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: appointment_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: person_id
+                  type: BIGINT
+              - column:
+                  name: start
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+            tableName: appointment
+  - changeSet:
+      id: 1699286738962-3
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  defaultValueBoolean: false
+                  name: deleted
+                  type: BOOLEAN
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: creation_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: clinic_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: user_id
+                  type: BIGINT
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+            tableName: clinic
+  - changeSet:
+      id: 1699286738962-4
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  defaultValueBoolean: false
+                  name: deleted
+                  type: BOOLEAN
+              - column:
+                  name: clinic_id
+                  type: BIGINT
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: creation_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: department_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: address
+                  type: JSONB
+              - column:
+                  name: phone
+                  type: JSONB
+            tableName: department
+  - changeSet:
+      id: 1699286738962-5
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  defaultValueBoolean: false
+                  name: deleted
+                  type: BOOLEAN
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: creation_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: department_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: employee_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: post_id
+                  type: BIGINT
+              - column:
+                  name: user_id
+                  type: BIGINT
+              - column:
+                  name: schedule
+                  type: JSONB
+            tableName: employee
+  - changeSet:
+      id: 1699286738962-6
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  name: category
+                  type: INTEGER
+              - column:
+                  defaultValueBoolean: false
+                  name: deleted
+                  type: BOOLEAN
+              - column:
+                  name: dent
+                  type: BOOLEAN
+              - column:
+                  name: item
+                  type: INTEGER
+              - column:
+                  name: subcategory
+                  type: INTEGER
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: creation_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: icd10_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: block
+                  type: VARCHAR(255)
+              - column:
+                  name: chapter
+                  type: VARCHAR(255)
+              - column:
+                  name: code
+                  type: VARCHAR(255)
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+            tableName: icd10
+  - changeSet:
+      id: 1699286738962-7
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  name: birth_day
+                  type: date
+              - column:
+                  defaultValueBoolean: false
+                  name: deleted
+                  type: BOOLEAN
+              - column:
+                  name: expiry
+                  type: date
+              - column:
+                  name: family
+                  type: BOOLEAN
+              - column:
+                  name: issue
+                  type: date
+              - column:
+                  name: male
+                  type: BOOLEAN
+              - column:
+                  name: passport_number
+                  type: INTEGER
+              - column:
+                  name: pin
+                  type: numeric(38)
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: creation_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: person_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: address
+                  type: VARCHAR(255)
+              - column:
+                  name: authority
+                  type: VARCHAR(255)
+              - column:
+                  name: country
+                  type: VARCHAR(255)
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: firstname
+                  type: VARCHAR(255)
+              - column:
+                  name: passport_series
+                  type: VARCHAR(255)
+              - column:
+                  name: patronymic
+                  type: VARCHAR(255)
+              - column:
+                  name: surname
+                  type: VARCHAR(255)
+              - column:
+                  name: phone
+                  type: JSONB
+            tableName: person
+  - changeSet:
+      id: 1699286738962-8
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  defaultValueBoolean: false
+                  name: deleted
+                  type: BOOLEAN
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: creation_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: post_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: code
+                  type: VARCHAR(255)
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: en
+                  type: VARCHAR(255)
+              - column:
+                  name: kg
+                  type: VARCHAR(255)
+              - column:
+                  name: ru
+                  type: VARCHAR(255)
+            tableName: post
+  - changeSet:
+      id: 1699286738962-9
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  defaultValueBoolean: false
+                  name: deleted
+                  type: BOOLEAN
+              - column:
+                  name: clinic_id
+                  type: BIGINT
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: creation_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: preiskurant_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: service
+                  type: BIGINT
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: price
+                  type: JSONB
+            tableName: preiskurant
+  - changeSet:
+      id: 1699286738962-10
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  defaultValueBoolean: false
+                  name: deleted
+                  type: BOOLEAN
+              - column:
+                  name: dent
+                  type: BOOLEAN
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: creation_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: service_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: service_name
+                  type: VARCHAR(512)
+              - column:
+                  name: code
+                  type: VARCHAR(255)
+              - column:
+                  name: number
+                  type: VARCHAR(255)
+              - column:
+                  name: section
+                  type: VARCHAR(255)
+              - column:
+                  name: section_name
+                  type: VARCHAR(255)
+              - column:
+                  name: view
+                  type: VARCHAR(255)
+            tableName: service
+  - changeSet:
+      id: 1699286738962-11
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  defaultValueBoolean: false
+                  name: deleted
+                  type: BOOLEAN
+              - column:
+                  name: anamnesis_id
+                  type: BIGINT
+              - column:
+                  name: appointment_id
+                  type: BIGINT
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: creation_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: treatment_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_date
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: preiskurant_id
+                  type: BIGINT
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: discount
+                  type: BYTEA
+              - column:
+                  name: tooth
+                  type: JSONB
+            tableName: treatment
+  - changeSet:
+      id: 1699286738962-12
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  name: code
+                  type: INTEGER
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueBoolean: false
+                  name: deleted
+                  type: BOOLEAN
+              - column:
+                  name: enabled
+                  type: BOOLEAN
+              - column:
+                  name: locked
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: users_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: person_id
+                  type: BIGINT
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+              - column:
+                  name: role
+                  type: VARCHAR(255)
+            tableName: users
+  - changeSet:
+      id: 1699286738962-13
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: expired
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                  name: revoked
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: token_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: user_id
+                  type: BIGINT
+              - column:
+                  name: token
+                  type: VARCHAR(255)
+              - column:
+                  name: token_type
+                  type: VARCHAR(255)
+            tableName: token
+  - changeSet:
+      id: 1699286738962-14
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: employee_id
+            constraintName: anamnesis_employee_id_key
+            tableName: anamnesis
+  - changeSet:
+      id: 1699286738962-15
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: email
+            constraintName: users_email_key
+            tableName: users
+  - changeSet:
+      id: 1699286738962-16
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: person_id
+            constraintName: users_person_id_key
+            tableName: users
+  - changeSet:
+      id: 1699286738962-17
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: token
+            constraintName: token_token_key
+            tableName: token
+  - changeSet:
+      id: 1699286738962-18
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: anamnesis_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: icd10_id
+                  type: BIGINT
+            tableName: anamnesis_icd10
+  - changeSet:
+      id: 1699286738962-19
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: clinic_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: person_id
+                  type: BIGINT
+            tableName: clinic_person
+  - changeSet:
+      id: 1699286738962-20
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: endpoint_pkey
+                  name: endpoint
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: endpoint_pkey
+                  name: method
+                  type: VARCHAR(255)
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+            tableName: endpoint
+  - changeSet:
+      id: 1699286738962-21
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  name: bool
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: privilege_pkey
+                  name: clinic_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: privilege_pkey
+                  name: post_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: privilege_pkey
+                  name: endpoint
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: privilege_pkey
+                  name: method
+                  type: VARCHAR(255)
+            tableName: privilege
+  - changeSet:
+      id: 1699286738962-22
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: clinic
+            constraintName: fk170twqkl3qdy9u4ind0fdo3bb
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: users
+  - changeSet:
+      id: 1699286738962-23
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: employee_id
+            baseTableName: anamnesis
+            constraintName: fk1dmqsmgrc7eujqym5wen3sksl
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: employee
+  - changeSet:
+      id: 1699286738962-24
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: person_id
+            baseTableName: clinic_person
+            constraintName: fk55e1s99xhmoffxr2vksj3qir
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: person
+  - changeSet:
+      id: 1699286738962-25
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: person_id
+            baseTableName: anamnesis
+            constraintName: fk6aqkup20cdvsy5fq114tjggep
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: person
+  - changeSet:
+      id: 1699286738962-26
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: clinic_id
+            baseTableName: department
+            constraintName: fk6io2v0mkg9sp6i0vgm9p1oem2
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: clinic
+  - changeSet:
+      id: 1699286738962-27
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: anamnesis_id
+            baseTableName: treatment
+            constraintName: fk77bvx615ls6she8jtlcjm0mb3
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: anamnesis
+  - changeSet:
+      id: 1699286738962-28
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: clinic_id
+            baseTableName: preiskurant
+            constraintName: fk7sp8da6yt1bu8wk94mxxeso04
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: clinic
+  - changeSet:
+      id: 1699286738962-29
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: employee_id
+            baseTableName: appointment
+            constraintName: fk9daqcqq2nrtbcr5xqeivvkorq
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: employee
+  - changeSet:
+      id: 1699286738962-30
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: department_id
+            baseTableName: employee
+            constraintName: fkbejtwvg9bxus2mffsm3swj3u9
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: department
+  - changeSet:
+      id: 1699286738962-31
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: anamnesis_id
+            baseTableName: anamnesis_icd10
+            constraintName: fkc1vk68c4t08lhrpjlqvmkhba0
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: anamnesis
+  - changeSet:
+      id: 1699286738962-32
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: post_id
+            baseTableName: employee
+            constraintName: fkcm3b9d5fiw8s6co7lkw8c0lbs
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: post
+  - changeSet:
+      id: 1699286738962-33
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: clinic_id
+            baseTableName: clinic_person
+            constraintName: fkcr2ssh01igxbohgwsv9ctm3ft
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: clinic
+  - changeSet:
+      id: 1699286738962-34
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: person_id
+            baseTableName: users
+            constraintName: fkd21kkcigxa21xuby5i3va9ncs
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: person
+  - changeSet:
+      id: 1699286738962-35
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: employee
+            constraintName: fkhal2duyxxjtadykhxos7wd3wg
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: users
+  - changeSet:
+      id: 1699286738962-36
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: token
+            constraintName: fkj8rfw4x0wjjyibfqq566j4qng
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: users
+  - changeSet:
+      id: 1699286738962-37
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: preiskurant_id
+            baseTableName: treatment
+            constraintName: fkjn07lipam8wg8hjlj50gn4rlh
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: preiskurant
+  - changeSet:
+      id: 1699286738962-38
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: appointment_id
+            baseTableName: treatment
+            constraintName: fklbjacumj5232ltta4bdnw68jj
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: appointment
+  - changeSet:
+      id: 1699286738962-39
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: icd10_id
+            baseTableName: anamnesis_icd10
+            constraintName: fkmi0l63eyj6gd3hdu2he4suct4
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: icd10
+  - changeSet:
+      id: 1699286738962-40
+      author: Makka (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: person_id
+            baseTableName: appointment
+            constraintName: fkt8en2adfe6sjnw9eeo7m2bwcb
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: person
+

@@ -25,8 +25,6 @@ public class JwtService {
     private long jwtExpiration;
     @Value("${application.security.jwt.refresh-token.expiration}")
     private long refreshExpiration;
-    @Value("${application.security.jwt.confirm.expiration}")
-    private long confirmExpiration;
 
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);

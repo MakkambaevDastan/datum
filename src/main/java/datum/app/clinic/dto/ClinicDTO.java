@@ -1,5 +1,7 @@
 package datum.app.clinic.dto;
 
+import datum.app.admin.model.Phone;
+import datum.app.clinic.model.Address;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,8 +18,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Jacksonized
-public class ClinicDTO  implements Serializable {
+public class ClinicDTO implements Serializable {
     @Schema(example = "Голливудская улыбка", description = "Название")
     private String name;
     private List<DepartmentDTO> departments = new ArrayList<>();
+
 }

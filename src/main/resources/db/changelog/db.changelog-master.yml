@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Makka
+  - include:
+      file: classpath:db/changelog/DDL/00010_init_schema.yml
+  - includeAll:
+      path:  classpath:db/changelog/changes
