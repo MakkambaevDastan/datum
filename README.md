@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 `.env`
 ```
 DB_URL=db_url
@@ -14,4 +13,3 @@ JWT_REFRESH_EXPIRATION=2592000000 # 30 day
 ```
 =======
 #datum
->>>>>>> origin/master
