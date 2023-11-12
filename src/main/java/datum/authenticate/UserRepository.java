@@ -22,27 +22,22 @@ public interface UserRepository extends JpaRepository<User, Long> {
 //    boolean existsByEmailIgnoreCaseAndCodeIsNull(String email);
 //    boolean existsByEmailIgnoreCaseAndCodeIsNullAndLockedFalse(String email);
 
-//      @Transactional
     @Modifying
     @Query("UPDATE User a SET a.enabled = TRUE, a.locked=FALSE, a.code = NULL WHERE a.email = ?1 AND a.code = ?2")
     void updateUserByEmailAndCode(String email, Integer code);
 
-//    @Transactional
         @Modifying
     @Query("UPDATE User a SET a.enabled = TRUE, a.locked=FALSE, a.code = NULL WHERE a.email = ?1")
     void enableUserByEmail(String email);
 
-//@Transactional
         @Modifying
     @Query("UPDATE User u SET u.password = null WHERE u.email = ?1 AND u.code = ?2")
     boolean updateUserPasswordByEmailIgnoreCaseAndCode(String email, Integer code);
 
-//    @Transactional
         @Modifying
     @Query("UPDATE User u SET u.password = ?1 WHERE u.email = ?2")
     boolean updateUserPasswordByEmailIgnoreCase(String password, String email);
 
-//    @Transactional
         @Modifying
     @Query("UPDATE User u SET u.password = ?1 WHERE u.email = ?2 AND u.password IS NULL")
     boolean updatePasswordByEmail(String password, String email);

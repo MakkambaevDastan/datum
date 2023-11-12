@@ -34,6 +34,8 @@
 #ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
 
 
+
+
 ##Maven Build
 #FROM  maven:3.8.3-openjdk-17  AS builder
 #COPY pom.xml /app/

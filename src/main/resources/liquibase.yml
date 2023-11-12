@@ -1,18 +1,20 @@
 spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yml
-url: jdbc:postgresql://localhost:5432/datum
+url: jdbc:postgresql://${DB_URL}:${DB_PORT}/${DB_DATABASE}
 username: postgres
 password: postgres
 driver: org.postgresql.Driver
 changeLogFile: src/main/resources/db/changelog/db.changelog-master.yml
 outputChangeLogFile: src/main/resources/db/changelog/changelog-output.yml
 
-referenceDriver: liquibase.ext.hibernate.database.connection.HibernateDriver
-referenceUrl: hibernate:spring:at.frink.troubleshoot?
-диалект: org.hibernate.dialect.MariaDB53Dialect&
-hibernate.physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&
-hibernate.physical_implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+#referenceDriver: liquibase.ext.hibernate.database.connection.HibernateDriver
+#referenceUrl: hibernate:spring:at.frink.troubleshoot?
+#диалект: org.hibernate.dialect.MariaDB53Dialect&
+#hibernate.physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&
+#hibernate.physical_implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+
+
 #referenceUrl: jdbc:postgresql://localhost:5432/datum
 #referenceDriver: org.postgresql.Driver
 #referenceUsername: postgres

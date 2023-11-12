@@ -43,3 +43,31 @@ application:
       expiration: ${JWT_EXPIRATION}
       refresh-token:
         expiration: ${JWT_REFRESH_EXPIRATION}
+#springdoc:
+#  api-docs:
+#    path: /doc
+#  swagger-ui:
+#    path: /api
+
+
+#springfox:
+#  documentation:
+#    swaggerUi:
+#      baseUrl: /api
+#    openApi:
+#      v3:
+#        path: /doc
+#    swagger:
+#      v2:
+#        path: /doc2
+
+#springfox:
+#  documentation:
+#    swagger-ui:
+#      base-url: /api
+#    openapi:
+#      v3:
+#        path: /doc
+#    swagger:
+#      v2:
+#        path: /doc2

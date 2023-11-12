@@ -19,7 +19,6 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 @Jacksonized
-//@Schema(description = "Информация о человеке")
 @Schema
 public class PersonDTO implements Serializable {
 
